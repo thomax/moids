@@ -1,0 +1,23 @@
+{
+  "name": "some-sim",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "svelte": "^5.20.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.8",
+    "echarts": "^5.6.0",
+    "gsap": "^3.12.7",
+    "human-names": "^1.0.12",
+    "pixi.js": "^8.8.1"
+  }
+}
