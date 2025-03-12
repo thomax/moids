@@ -9,6 +9,8 @@
   import ExpandedStats from './lib/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
 
+  //  import { moids, deadMoids, livingMoidCounts, deadMoidCounts } from './stores/moidStore.js'
+
   // assuming moid speed is 1
   const directions = [
     { x: 0, y: -1 }, // up
@@ -22,6 +24,8 @@
   ]
 
   const initialMoidCount = 100
+  const xCellCount = 20
+
   let moidFieldContainer
   let app
   const appData = {}
@@ -38,7 +42,7 @@
       hello: true,
       backgroundAlpha: 1,
       antialias: true,
-      background: 'black',
+      background: 'rgb(111, 77, 22)',
       resizeTo: moidFieldContainer,
     })
     moidFieldContainer.appendChild(app.canvas)
@@ -59,7 +63,7 @@
 
     // general game data
     const { width, height } = app.canvas
-    const cellSize = Math.floor(width / 40)
+    const cellSize = Math.floor(width / xCellCount)
     appData.width = width
     appData.height = height
     appData.cellSize = cellSize
@@ -124,7 +128,7 @@
 
     for (let i = 0; i < particleCount; i++) {
       const particle = new Graphics()
-      particle.circle(0, 0, 2)
+      particle.circle(0, 0, appData.cellSize / 20 + 1)
       particle.fill(0xffffff) // Yellow color
       particle.x = x
       particle.y = y
@@ -133,13 +137,13 @@
 
       // Animate each particle
       const angle = (i / particleCount) * Math.PI * 2
-      const distance = 30
+      const distance = appData.cellSize * 1.5
       gsap.to(particle, {
         x: x + Math.cos(angle) * distance,
         y: y + Math.sin(angle) * distance,
         alpha: 0.9,
         duration: 1.5,
-        ease: 'power2.out',
+        ease: 'power3.out',
         onComplete: () => {
           particle.destroy()
         },
@@ -168,6 +172,7 @@
         // eat
         moid.eatAt(currentLocation)
       } else if (moid.hasSufficientEnergy()) {
+        // reproduce
         const mate = moid.findMateAt(moid.col, moid.row, moids)
         if (mate) {
           const offspring = moid.createOffspringWith(mate)

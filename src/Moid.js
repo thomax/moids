@@ -36,13 +36,17 @@ export class Moid {
     this.energy = 100
     this.speed = 1 // movement speed, unused
     this.size = 150 // body size
-    this.isSelected = false
-    this.energyGivenToOffspring = 0.3
-    this.keepMovingThreshold = 25 // Grass level above which the moid will stop to eat
     this.metabolicRate = 3 // Energy consumed per turn
     this.feedingEfficiency = 0.2 // Amount of available grass the moid will eat
     this.grassEnergyConversion = 0.4 // Percentage of grass converted to moid energy
+    // Genetic traits
+    this.keepMovingThreshold = 25 // Grass level above which the moid will stop to eat
+    this.energyGivenToOffspring = 0.3
     this.sufficientEnergyLevel = 0.8 // Energy level at which the moid will stop eating
+    this.mutationRate = 0.1 // Chance of mutation occurring during reproduction
+    this.mutationImpact = 0.1 // Impact of mutation on a trait
+    // UI thingy
+    this.isSelected = false
     this.assignSprite(this.col * cellSize + cellSize / 2, row * cellSize + cellSize / 2, cellSize)
     console.info('Welcome', this.name, `${this.col},${this.row}!`)
   }
@@ -172,8 +176,23 @@ export class Moid {
     this.offspringCount += 1
     mate.offspringCount += 1
     mate.energy -= energyFromMate
+    // handle genetics
+    const traits = ['keepMovingThreshold', 'energyGivenToOffspring', 'sufficientEnergyLevel', 'mutationRate', 'mutationImpact']
+    traits.forEach(trait => {
+      const parent = Math.random() < 0.5 ? this : mate
+      offspring[trait] = parent[trait]
+      if (Math.random() < parent.mutationRate) {
+        const upOrDown = Math.random() < 0.5 ? -1 : 1
+        offspring[trait] = parseFloat(parent[trait] + (parent[trait] * parent.mutationImpact * upOrDown)).toFixed(3)
+        console.log('Mutation!', trait, parent[trait], parent.mutationImpact, '-->', offspring[trait])
+        if (offspring[trait] < 0) {
+          throw new Error('Mutation borkadas', parent, offspring, upOrDown)
+        }
+      }
+    })
     return offspring
   }
-
+  // Mutation! energyGivenToOffspring 0.3 --> -0.7
+  // Mutation! mutationImpact 0.1 0.1 --> -0.9
 
 }

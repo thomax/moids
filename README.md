@@ -3,5 +3,6 @@ A simulation of mouse-oids being about their business of eating, reproducing and
 
 ## Todo
 - reproduction with mutation
+- svelte stores
 - charts with average moid attributes over time
 - foxoid

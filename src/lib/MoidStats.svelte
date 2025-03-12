@@ -141,6 +141,7 @@
     color: white;
     margin-top: 5px;
     margin-bottom: 0;
+    padding-left: 3px;
   }
 
   ul {
