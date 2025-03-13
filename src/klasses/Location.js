@@ -3,12 +3,9 @@ import { Graphics } from 'pixi.js'
 
 export class Location {
 
-  static app = null
+  static appData = null
   static maxGrass = 150
-
-  static setApp(app) {
-    Location.app = app
-  }
+  static grassRegrowthRate = 0.5
 
   static setAppData(appData) {
     Location.appData = appData
@@ -24,7 +21,7 @@ export class Location {
     this.grass = Math.round(Math.random() * Location.maxGrass)
     this.cell = new Graphics()
     this.updateCell()
-    Location.app.stage.addChild(this.cell)
+    Location.appData.app.stage.addChild(this.cell)
   }
 
   updateCell() {
@@ -40,7 +37,7 @@ export class Location {
   }
 
   growGrass() {
-    this.grass += 0.5
+    this.grass += Location.grassRegrowthRate
     if (this.grass > Location.maxGrass) {
       this.grass = Location.maxGrass
     }

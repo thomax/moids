@@ -2,12 +2,12 @@
   // @ts-nocheck
   import { onMount } from 'svelte'
   import { Application, Sprite, Assets, Graphics } from 'pixi.js'
-  import { gsap } from 'gsap'
-  import { Location } from './Location.js'
-  import { Moid } from './Moid.js'
+  import { Location } from './klasses/Location.js'
+  import { Moid } from './klasses/Moid.js'
   import MoidStats from './lib/MoidStats.svelte'
   import ExpandedStats from './lib/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
+  import { createSpawnEffect, playSpawnSound } from './utils/effects.js'
 
   //  import { moids, deadMoids, livingMoidCounts, deadMoidCounts } from './stores/moidStore.js'
 
@@ -42,14 +42,11 @@
       hello: true,
       backgroundAlpha: 1,
       antialias: true,
-      background: 'rgb(111, 77, 22)',
+      //background: 'rgb(111, 77, 22)',
+      background: 'black',
       resizeTo: moidFieldContainer,
     })
     moidFieldContainer.appendChild(app.canvas)
-    Moid.setApp(app)
-    Moid.setAppData(appData)
-    Location.setApp(app)
-    Location.setAppData(appData)
     await Moid.loadTexture()
 
     // sound setup
@@ -64,6 +61,7 @@
     // general game data
     const { width, height } = app.canvas
     const cellSize = Math.floor(width / xCellCount)
+    appData.app = app
     appData.width = width
     appData.height = height
     appData.cellSize = cellSize
@@ -71,11 +69,13 @@
     appData.rowCount = Math.floor(height / cellSize)
     appData.onClickCell = (col, row) => {
       const moid = new Moid(col, row)
-      moids.unshift(moid)
-      createSpawnEffect(moid.sprite.x, moid.sprite.y)
-      playSpawnSound()
+      moids.push(moid)
+      playSpawnSound(appData)
+      createSpawnEffect(moid.sprite.x, moid.sprite.y, appData)
     }
     console.log('appData', appData)
+    Moid.setAppData(appData)
+    Location.setAppData(appData)
   }
 
   function initLocations(appData, locations) {
@@ -122,48 +122,12 @@
     return locations[nextCol][nextRow]
   }
 
-  function createSpawnEffect(x, y) {
-    const particleCount = 12
-    const particles = []
-
-    for (let i = 0; i < particleCount; i++) {
-      const particle = new Graphics()
-      particle.circle(0, 0, appData.cellSize / 20 + 1)
-      particle.fill(0xffffff) // Yellow color
-      particle.x = x
-      particle.y = y
-      Moid.app.stage.addChild(particle)
-      particles.push(particle)
-
-      // Animate each particle
-      const angle = (i / particleCount) * Math.PI * 2
-      const distance = appData.cellSize * 1.5
-      gsap.to(particle, {
-        x: x + Math.cos(angle) * distance,
-        y: y + Math.sin(angle) * distance,
-        alpha: 0.9,
-        duration: 1.5,
-        ease: 'power3.out',
-        onComplete: () => {
-          particle.destroy()
-        },
-      })
-    }
-  }
-
-  function playSpawnSound() {
-    const source = appData.audioContext.createBufferSource()
-    source.buffer = appData.spawnSound
-    source.connect(appData.audioContext.destination)
-    source.start(0)
-  }
-
   function updateMoids(moid) {
     let newlyDeceased = []
     moids.forEach((moid) => {
       const isMoidDead = !moid.metabolize()
       if (isMoidDead) {
-        deadMoids.unshift(moid)
+        deadMoids.push(moid)
         newlyDeceased.push(moid)
         return
       }
@@ -176,14 +140,14 @@
         const mate = moid.findMateAt(moid.col, moid.row, moids)
         if (mate) {
           const offspring = moid.createOffspringWith(mate)
-          moids.unshift(offspring)
-          createSpawnEffect(offspring.sprite.x, offspring.sprite.y)
-          playSpawnSound()
+          moids.push(offspring)
+          playSpawnSound(appData)
+          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
         }
       } else {
         // With nothing better to do, move to a random adjacent location
         const newLocation = randomAdjacentLocationFrom(currentLocation)
-        moid.moveTo(newLocation.col, newLocation.row, appData)
+        moid.moveTo(newLocation.col, newLocation.row)
       }
     })
     moids = moids.filter((m) => !newlyDeceased.includes(m))

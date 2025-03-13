@@ -1,21 +1,17 @@
 // @ts-nocheck
 import { allRandom } from 'human-names'
-import { Application, Sprite, Assets, Graphics } from 'pixi.js'
-import moidImagePath from './assets/moid.png'
+import { Sprite, Assets } from 'pixi.js'
+import moidImagePath from '../assets/moid.png'
 import { gsap } from 'gsap'
 
 
 export class Moid {
   static texture = null
-  static app = null
+  static appData = null
   static id = 1
 
   static async loadTexture() {
     Moid.texture = await Assets.load(moidImagePath)
-  }
-
-  static setApp(app) {
-    Moid.app = app
   }
 
   static setAppData(appData) {
@@ -64,7 +60,7 @@ export class Moid {
     this.sprite.x = x
     this.sprite.y = y
     this.sprite.anchor.set(0.5)
-    Moid.app.stage.addChild(this.sprite)
+    Moid.appData.app.stage.addChild(this.sprite)
   }
 
   eatAt(location) {
@@ -93,8 +89,8 @@ export class Moid {
     this.sprite.removeFromParent()
   }
 
-  moveTo(newCol, newRow, appData) {
-    const { cellSize, colCount, rowCount } = appData
+  moveTo(newCol, newRow) {
+    const { cellSize, colCount, rowCount } = Moid.appData
     const isWrappingX = Math.abs(newCol - this.col) > this.speed
     const isWrappingY = Math.abs(newRow - this.row) > this.speed
     const finalX = newCol * cellSize + cellSize / 2
