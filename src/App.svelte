@@ -7,7 +7,8 @@
   import MoidStats from './lib/MoidStats.svelte'
   import ExpandedStats from './lib/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
-  import { createSpawnEffect, playSpawnSound } from './utils/effects.js'
+  import deathSoundPath from './assets/death-effect.mp3'
+  import { createDeathEffect, createSpawnEffect, playSound } from './utils/effects.js'
 
   //  import { moids, deadMoids, livingMoidCounts, deadMoidCounts } from './stores/moidStore.js'
 
@@ -23,7 +24,7 @@
     { x: -1, y: -1 }, // up-left
   ]
 
-  const initialMoidCount = 100
+  const initialMoidCount = 60
   const xCellCount = 20
 
   let moidFieldContainer
@@ -54,9 +55,13 @@
     const spawnSound = await fetch(spawnSoundPath)
       .then((response) => response.arrayBuffer())
       .then((buffer) => audioContext.decodeAudioData(buffer))
+    const deathSound = await fetch(deathSoundPath)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => audioContext.decodeAudioData(buffer))
 
     appData.audioContext = audioContext
     appData.spawnSound = spawnSound
+    appData.deathSound = deathSound
 
     // general game data
     const { width, height } = app.canvas
@@ -70,7 +75,7 @@
     appData.onClickCell = (col, row) => {
       const moid = new Moid(col, row)
       moids.push(moid)
-      playSpawnSound(appData)
+      playSound('spawnSound', appData)
       createSpawnEffect(moid.sprite.x, moid.sprite.y, appData)
     }
     console.log('appData', appData)
@@ -127,6 +132,8 @@
     moids.forEach((moid) => {
       const isMoidDead = !moid.metabolize()
       if (isMoidDead) {
+        playSound('deathSound', appData)
+        //createDeathEffect(moid.sprite.x, moid.sprite.y, appData)
         deadMoids.push(moid)
         newlyDeceased.push(moid)
         return
@@ -141,7 +148,7 @@
         if (mate) {
           const offspring = moid.createOffspringWith(mate)
           moids.push(offspring)
-          playSpawnSound(appData)
+          playSound('spawnSound', appData)
           createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
         }
       } else {
