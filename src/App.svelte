@@ -169,10 +169,10 @@
       }
       const currentLocation = locations[moid.col][moid.row]
       if (moid.wantsToEat(currentLocation.grass)) {
-        // eat
+        // If moid wants to eat, eat
         moid.eatAt(currentLocation)
       } else if (moid.hasSufficientEnergy()) {
-        // reproduce
+        // If moid has energy, mate
         const mate = moid.findMateAt(moid.col, moid.row, moids)
         if (mate) {
           const offspring = moid.createOffspringWith(mate)
@@ -181,7 +181,7 @@
           playSpawnSound()
         }
       } else {
-        // move
+        // With nothing better to do, move to a random adjacent location
         const newLocation = randomAdjacentLocationFrom(currentLocation)
         moid.moveTo(newLocation.col, newLocation.row, appData)
       }
