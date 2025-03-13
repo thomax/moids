@@ -122,10 +122,10 @@ export class Moid {
       let teleportX = tempX
       let teleportY = tempY
       if (isWrappingX) {
-        teleportX = this.col == 0 ? colCount * cellSize + cellSize : 0
+        teleportX = this.col == 0 ? colCount * cellSize : 0
       }
       if (isWrappingY) {
-        teleportY = this.row == 0 ? rowCount * cellSize + cellSize : 0
+        teleportY = this.row == 0 ? rowCount * cellSize : 0
       }
       this.assignSprite(teleportX, teleportY)
     }
