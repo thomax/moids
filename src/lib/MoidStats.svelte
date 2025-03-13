@@ -2,6 +2,7 @@
   // @ts-nocheck
   import { Chart, registerables } from 'chart.js'
   Chart.register(...registerables)
+  import LineChart from './LineChart.svelte'
 
   import { onMount } from 'svelte'
 
@@ -10,83 +11,12 @@
   export let onSelectedMoid = null
   export let livingMoidCounts = []
   export let deadMoidCounts = []
-
-  let livingChartContainer
-  let livingChart
-
-  function status(moid) {
-    if (moid.energy > 80) return '😎'
-    if (moid.energy > 60) return '😀'
-    if (moid.energy > 40) return '😅'
-    if (moid.energy > 20) return '😰'
-    if (moid.energy > 10) return '😬'
-    return '🫠'
-  }
-
-  function updateLivingChart() {
-    if (!livingChartContainer) return
-    if (!livingChart) {
-      livingChart = new Chart(livingChartContainer, {
-        type: 'line',
-        data: {
-          labels: Array.from({ length: livingMoidCounts.length }, (_, i) => i + 1),
-          datasets: [
-            {
-              data: livingMoidCounts,
-              fill: true,
-              borderColor: 'rgb(00, 255, 00)',
-              borderWidth: 1,
-              label: 'Living Moids',
-              pointRadius: 0,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: {
-              offset: false,
-              grid: {
-                display: false,
-              },
-              ticks: {
-                display: false,
-              },
-            },
-            y: {
-              beginAtZero: true,
-              grid: {
-                display: false,
-              },
-              ticks: {
-                display: false,
-              },
-            },
-          },
-          responsive: true,
-          plugins: {
-            legend: {
-              display: false,
-            },
-          },
-        },
-      })
-    }
-    livingChart.data.datasets.forEach((dataset) => {
-      dataset.data.push(livingMoidCounts[livingMoidCounts.length - 1])
-    })
-    livingChart.data.labels = Array.from({ length: livingMoidCounts.length }, (_, i) => i + 1)
-    livingChart.update('none')
-  }
-
-  $: if (livingMoidCounts) updateLivingChart()
-
-  onMount(() => {
-    updateLivingChart()
-  })
 </script>
 
 <div class="stats-container">
-  <canvas class="chart" bind:this={livingChartContainer}></canvas>
+  <div class="chart">
+    <LineChart data={livingMoidCounts} lineColor="rgb(255, 255, 255)" label="Living Moids" />
+  </div>
   <div class="living">
     <h2>Alive {livingMoidCounts[livingMoidCounts.length - 1]}</h2>
     <ul>
@@ -139,9 +69,11 @@
 
   h2 {
     color: white;
-    margin-top: 5px;
-    margin-bottom: 0;
+    margin: 0px;
     padding-left: 3px;
+    position: sticky;
+    top: 0;
+    background-color: black;
   }
 
   ul {
@@ -164,6 +96,9 @@
   li.header {
     font-size: 0.8rem;
     font-weight: bold;
+    position: sticky;
+    top: 31px;
+    background-color: black;
   }
 
   .selected {
@@ -173,21 +108,24 @@
   .chart {
     max-height: 20vh;
     margin: 0;
-    width: 100%;
     border: 1px solid gray;
-    margin-bottom: 5px;
+    padding: 3px;
+    margin-bottom: 7px;
   }
+
   .living {
-    max-height: 40vh;
+    height: 40vh;
     overflow-y: auto;
     border: 1px solid gray;
-    padding: 3px;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
+    border: 1px solid gray;
+    padding: 0px 3px 0px 3px;
   }
+
   .deceased {
-    max-height: 35vh;
+    height: 34vh;
     overflow-y: auto;
     border: 1px solid gray;
-    padding: 3px;
+    padding: 0px 3px 0px 3px;
   }
 </style>
