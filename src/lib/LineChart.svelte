@@ -8,7 +8,7 @@
   export let data = []
   export let lineColor = 'rgb(255, 255, 255)'
   export let label = 'Data'
-
+  export let options = { beginAtZero: true }
   let chartContainer
   let chart
 
@@ -42,12 +42,9 @@
               },
             },
             y: {
-              beginAtZero: true,
-              grid: {
-                display: false,
-              },
+              beginAtZero: options.beginAtZero,
               ticks: {
-                display: false,
+                display: true,
               },
             },
           },

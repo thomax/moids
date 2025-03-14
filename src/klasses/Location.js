@@ -6,6 +6,16 @@ export class Location {
   static appData = null
   static maxGrass = 150
   static grassRegrowthRate = 0.5
+  static directions = [
+    { x: 0, y: -1 }, // up
+    { x: 1, y: 0 }, // right
+    { x: 0, y: 1 }, // down
+    { x: -1, y: 0 }, // left
+    { x: 1, y: -1 }, // up-right
+    { x: 1, y: 1 }, // down-right
+    { x: -1, y: 1 }, // down-left
+    { x: -1, y: -1 }, // up-left
+  ]
 
   static setAppData(appData) {
     Location.appData = appData
@@ -42,5 +52,24 @@ export class Location {
       this.grass = Location.maxGrass
     }
     this.updateCell()
+  }
+
+  randomAdjacentCoordinates() {
+    const { colCount, rowCount } = Location.appData
+    const { x, y } = Location.directions[Math.floor(Math.random() * Location.directions.length)]
+    let nextCol = this.col + x
+    let nextRow = this.row + y
+    // maybe wrap the map
+    if (nextCol < 0) {
+      nextCol = colCount - 1
+    } else if (nextCol >= colCount) {
+      nextCol = 0
+    }
+    if (nextRow < 0) {
+      nextRow = rowCount - 1
+    } else if (nextRow >= rowCount) {
+      nextRow = 0
+    }
+    return { nextCol, nextRow }
   }
 }

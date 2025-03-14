@@ -12,20 +12,8 @@
 
   //  import { moids, deadMoids, livingMoidCounts, deadMoidCounts } from './stores/moidStore.js'
 
-  // assuming moid speed is 1
-  const directions = [
-    { x: 0, y: -1 }, // up
-    { x: 1, y: 0 }, // right
-    { x: 0, y: 1 }, // down
-    { x: -1, y: 0 }, // left
-    { x: 1, y: -1 }, // up-right
-    { x: 1, y: 1 }, // down-right
-    { x: -1, y: 1 }, // down-left
-    { x: -1, y: -1 }, // up-left
-  ]
-
   const initialMoidCount = 60
-  const xCellCount = 20
+  const xCellCount = 40
 
   let moidFieldContainer
   let app
@@ -108,39 +96,18 @@
     return moids
   }
 
-  function randomAdjacentLocationFrom(loc) {
-    const { colCount, rowCount } = appData
-    const { x, y } = directions[Math.floor(Math.random() * directions.length)]
-    let nextCol = loc.col + x
-    let nextRow = loc.row + y
-    // maybe wrap the map
-    if (nextCol < 0) {
-      nextCol = colCount - 1
-    } else if (nextCol >= colCount) {
-      nextCol = 0
-    }
-    if (nextRow < 0) {
-      nextRow = rowCount - 1
-    } else if (nextRow >= rowCount) {
-      nextRow = 0
-    }
-    return locations[nextCol][nextRow]
-  }
-
   function updateMoids(moid) {
     let newlyDeceased = []
     moids.forEach((moid) => {
       const isMoidDead = !moid.metabolize()
       if (isMoidDead) {
         playSound('deathSound', appData)
-        //createDeathEffect(moid.sprite.x, moid.sprite.y, appData)
-        deadMoids.push(moid)
         newlyDeceased.push(moid)
         return
       }
       const currentLocation = locations[moid.col][moid.row]
       if (moid.wantsToEat(currentLocation.grass)) {
-        // If moid wants to eat, eat
+        // If moid needs energy, eat
         moid.eatAt(currentLocation)
       } else if (moid.hasSufficientEnergy()) {
         // If moid has energy, mate
@@ -153,12 +120,12 @@
         }
       } else {
         // With nothing better to do, move to a random adjacent location
-        const newLocation = randomAdjacentLocationFrom(currentLocation)
-        moid.moveTo(newLocation.col, newLocation.row)
+        const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+        moid.moveTo(nextCol, nextRow)
       }
     })
     moids = moids.filter((m) => !newlyDeceased.includes(m))
-    deadMoids = [...deadMoids]
+    deadMoids = [...deadMoids, ...newlyDeceased]
     livingMoidCounts.push(moids.length)
     livingMoidCounts = [...livingMoidCounts]
     deadMoidCounts.push(deadMoids.length)
@@ -209,7 +176,7 @@
     {livingMoidCounts}
     {deadMoidCounts}
   />
-  <ExpandedStats />
+  <ExpandedStats {moids} />
 </div>
 
 <style>

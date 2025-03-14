@@ -1,14 +1,15 @@
 // @ts-nocheck
 import { allRandom } from 'human-names'
 import { Sprite, Assets } from 'pixi.js'
-import moidImagePath from '../assets/moid.png'
 import { gsap } from 'gsap'
-
+import moidImagePath from '../assets/moid.png'
+import { round } from '../utils/functions.js'
 
 export class Moid {
   static texture = null
   static appData = null
   static id = 1
+  static geneticTraits = ['keepMovingThreshold', 'energyGivenToOffspring', 'sufficientEnergyLevel', 'mutationRate', 'mutationImpact']
 
   static async loadTexture() {
     Moid.texture = await Assets.load(moidImagePath)
@@ -172,15 +173,16 @@ export class Moid {
     this.offspringCount += 1
     mate.offspringCount += 1
     mate.energy -= energyFromMate
+
     // handle genetics
-    const traits = ['keepMovingThreshold', 'energyGivenToOffspring', 'sufficientEnergyLevel', 'mutationRate', 'mutationImpact']
-    traits.forEach(trait => {
+    Moid.geneticTraits.forEach(trait => {
       const parent = Math.random() < 0.5 ? this : mate
       offspring[trait] = parent[trait]
+      // Maybe mutate
       if (Math.random() < parent.mutationRate) {
         const upOrDown = Math.random() < 0.5 ? -1 : 1
-        offspring[trait] = parseFloat(parent[trait] + (parent[trait] * parent.mutationImpact * upOrDown)).toFixed(3)
-        console.log('Mutation!', trait, parent[trait], parent.mutationImpact, '-->', offspring[trait])
+        offspring[trait] = round(parent[trait] + (parent[trait] * parent.mutationImpact * upOrDown))
+        console.info('Mutation!', trait, parent[trait], parent.mutationImpact, '-->', offspring[trait])
         if (offspring[trait] < 0) {
           throw new Error('Mutation borkadas', parent, offspring, upOrDown)
         }
@@ -188,7 +190,5 @@ export class Moid {
     })
     return offspring
   }
-  // Mutation! energyGivenToOffspring 0.3 --> -0.7
-  // Mutation! mutationImpact 0.1 0.1 --> -0.9
 
 }

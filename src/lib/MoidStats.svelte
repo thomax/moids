@@ -156,6 +156,7 @@
     position: sticky;
     top: 31px;
     background-color: black;
+    cursor: pointer;
   }
 
   .selected {
