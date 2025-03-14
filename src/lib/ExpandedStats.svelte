@@ -61,12 +61,12 @@
       options={{ beginAtZero: false }}
     />
   </div>
-  <h2>Energy Given to Offspring</h2>
+  <h2>Energy to Offspring</h2>
   <div class="chart">
     <LineChart
       data={avgsEnergyGivenToOffspring}
       lineColor="rgb(255, 0, 255)"
-      label="Energy given to offspring"
+      label="Energy to offspring"
       options={{ beginAtZero: false }}
     />
   </div>
@@ -107,7 +107,6 @@
     padding: 3px;
     margin-left: 10px;
     width: auto;
-    height: 100vh;
     font-family: 'Courier New', Courier, monospace;
     padding: 3px;
     color: white;

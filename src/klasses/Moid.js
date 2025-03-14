@@ -6,6 +6,7 @@ import moidImagePath from '../assets/moid.png'
 import { round } from '../utils/functions.js'
 
 export class Moid {
+  static animationDuration = 0.4
   static texture = null
   static appData = null
   static id = 1
@@ -115,7 +116,7 @@ export class Moid {
       gsap.to(this.sprite, {
         x: tempX,
         y: tempY,
-        duration: 0.3
+        duration: Moid.animationDuration / 2
       })
       // Second, remove the sprite and add a new at the opposite edge
       this.sprite.removeFromParent()
@@ -135,7 +136,7 @@ export class Moid {
     gsap.to(this.sprite, {
       x: finalX,
       y: finalY,
-      duration: (isWrappingX || isWrappingY) ? 0.3 : 0.6,
+      duration: (isWrappingX || isWrappingY) ? Moid.animationDuration / 2 : Moid.animationDuration,
     })
     this.col = newCol
     this.row = newRow
