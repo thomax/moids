@@ -3,27 +3,31 @@
   import { onMount } from 'svelte'
   import { Application, Sprite, Assets, Graphics } from 'pixi.js'
   import { Location } from './klasses/Location.js'
+  import { Oid } from './klasses/Oid.js'
   import { Moid } from './klasses/Moid.js'
+  import { Foxoid } from './klasses/Foxoid.js'
   import MoidStats from './lib/MoidStats.svelte'
   import ExpandedStats from './lib/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
   import deathSoundPath from './assets/death-effect.mp3'
   import { createDeathEffect, createSpawnEffect, playSound } from './utils/effects.js'
 
-  //  import { moids, deadMoids, livingMoidCounts, deadMoidCounts } from './stores/moidStore.js'
+  const initialMoidCount = 200
+  const xCellCount = 100
 
-  const initialMoidCount = 60
-  const xCellCount = 40
-
-  let moidFieldContainer
+  let oidFieldContainer
   let app
   const appData = {}
 
-  let livingMoidCounts = []
-  let deadMoidCounts = []
   const locations = []
   let moids = []
   let deadMoids = []
+  let foxoids = []
+  let deadFoxoids = []
+  let livingMoidCounts = []
+  let deadMoidCounts = []
+  let livingFoxoidCounts = []
+  let deadFoxoidCounts = []
 
   async function initApp() {
     app = new Application()
@@ -31,12 +35,12 @@
       hello: true,
       backgroundAlpha: 1,
       antialias: true,
-      //background: 'rgb(111, 77, 22)',
       background: 'black',
-      resizeTo: moidFieldContainer,
+      resizeTo: oidFieldContainer,
     })
-    moidFieldContainer.appendChild(app.canvas)
+    oidFieldContainer.appendChild(app.canvas)
     await Moid.loadTexture()
+    await Foxoid.loadTexture()
 
     // sound setup
     const audioContext = new (window.AudioContext || window.webkitAudioContext)()
@@ -61,13 +65,19 @@
     appData.colCount = Math.floor(width / cellSize)
     appData.rowCount = Math.floor(height / cellSize)
     appData.onClickCell = (col, row) => {
-      const moid = new Moid(col, row)
-      moids.push(moid)
+      let oid
+      if (false) {
+        oid = new Moid(col, row)
+        moids.push(oid)
+      } else {
+        oid = new Foxoid(col, row)
+        foxoids.push(oid)
+      }
       playSound('spawnSound', appData)
-      createSpawnEffect(moid.sprite.x, moid.sprite.y, appData)
+      createSpawnEffect(oid.sprite.x, oid.sprite.y, appData)
     }
     console.log('appData', appData)
-    Moid.setAppData(appData)
+    Oid.setAppData(appData)
     Location.setAppData(appData)
   }
 
@@ -96,24 +106,26 @@
     return moids
   }
 
-  function updateMoids(moid) {
-    let newlyDeceased = []
+  function updateMoids() {
+    let newlyDeceasedMoids = []
     moids.forEach((moid) => {
-      const isMoidDead = !moid.metabolize()
-      if (isMoidDead) {
+      const isDead = !moid.metabolize()
+      if (isDead) {
         playSound('deathSound', appData)
-        newlyDeceased.push(moid)
+        newlyDeceasedMoids.push(moid)
         return
       }
       const currentLocation = locations[moid.col][moid.row]
-      if (moid.wantsToEat(currentLocation.grass)) {
+      if (moid.willEat(currentLocation.grass)) {
         // If moid needs energy, eat
-        moid.eatAt(currentLocation)
+        const grassConsumed = moid.eat(currentLocation.grass)
+        currentLocation.reduceGrass(grassConsumed)
       } else if (moid.hasSufficientEnergy()) {
         // If moid has energy, mate
-        const mate = moid.findMateAt(moid.col, moid.row, moids)
+        const mate = moid.findOtherOidsPresent(moids)[0]
         if (mate) {
-          const offspring = moid.createOffspringWith(mate)
+          let offspring = new Moid(moid.col, moid.row)
+          offspring = moid.createOffspringWith(offspring, mate)
           moids.push(offspring)
           playSound('spawnSound', appData)
           createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
@@ -124,12 +136,51 @@
         moid.moveTo(nextCol, nextRow)
       }
     })
-    moids = moids.filter((m) => !newlyDeceased.includes(m))
-    deadMoids = [...deadMoids, ...newlyDeceased]
+    moids = moids.filter((m) => !newlyDeceasedMoids.includes(m))
+    deadMoids = [...deadMoids, ...newlyDeceasedMoids]
     livingMoidCounts.push(moids.length)
     livingMoidCounts = [...livingMoidCounts]
     deadMoidCounts.push(deadMoids.length)
     deadMoidCounts = [...deadMoidCounts]
+  }
+
+  function updateFoxoids() {
+    let newlyDeceasedFoxoids = []
+    foxoids.forEach((foxoid) => {
+      const isDead = !foxoid.metabolize()
+      if (isDead) {
+        playSound('deathSound', appData)
+        newlyDeceasedFoxoids.push(foxoid)
+        return
+      }
+      const currentLocation = locations[foxoid.col][foxoid.row]
+      const prey = foxoid.findOtherOidsPresent(moids)[0]
+
+      if (prey && foxoid.willEat(prey.energy)) {
+        // If foxoid needs energy, eat
+        const energyConsumed = foxoid.eat(prey.energy)
+        prey.die()
+        moids = moids.filter((m) => m.id !== prey.id)
+        deadMoids.push(prey)
+      } else if (foxoid.hasSufficientEnergy()) {
+        // If foxoid has energy, mate
+        const mate = foxoid.findOtherOidsPresent(foxoids)[0]
+        if (mate) {
+          let offspring = new Foxoid(foxoid.col, foxoid.row)
+          offspring = foxoid.createOffspringWith(offspring, mate)
+          foxoids.push(offspring)
+          playSound('spawnSound', appData)
+          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
+        }
+      } else {
+        // With nothing better to do, move to a random adjacent location
+        const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+        foxoid.moveTo(nextCol, nextRow)
+      }
+    })
+    foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
+    livingFoxoidCounts.push(foxoids.length)
+    deadFoxoidCounts.push(deadFoxoids.length)
   }
 
   function updateLocations() {
@@ -142,9 +193,9 @@
     }
   }
 
-  function handleSelectedMoid(moidId) {
-    const moid = moids.find((m) => m.id === moidId)
-    moid.toggleSelected()
+  function handleSelectedOid(oidId) {
+    const oid = [moids, foxoids].flat().find((oid) => oid.id === oidId)
+    oid.toggleSelected()
   }
 
   onMount(async () => {
@@ -155,6 +206,7 @@
     app.ticker.maxFPS = 1
     app.ticker.add((time) => {
       // this is the app run loop
+      updateFoxoids()
       updateMoids()
       updateLocations()
     })
@@ -168,15 +220,17 @@
 </script>
 
 <div id="container">
-  <div bind:this={moidFieldContainer} id="moid-field"></div>
+  <div bind:this={oidFieldContainer} id="moid-field"></div>
   <MoidStats
     {moids}
     {deadMoids}
-    onSelectedMoid={handleSelectedMoid}
+    {foxoids}
     {livingMoidCounts}
     {deadMoidCounts}
+    {livingFoxoidCounts}
+    onSelectedOid={handleSelectedOid}
   />
-  <ExpandedStats {moids} />
+  <ExpandedStats {moids} {foxoids} />
 </div>
 
 <style>

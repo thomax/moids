@@ -30,6 +30,11 @@ export class Location {
     this.y = row * this.size
     this.grass = Math.round(Math.random() * Location.maxGrass)
     this.cell = new Graphics()
+    this.cell.eventMode = 'static'
+    this.cell.cursor = 'pointer'
+    this.cell.onclick = () => {
+      Location.appData.onClickCell(this.col, this.row)
+    }
     this.updateCell()
     Location.appData.app.stage.addChild(this.cell)
   }
@@ -38,18 +43,20 @@ export class Location {
     this.cell.clear()
     this.cell.rect(this.x, this.y, this.size, this.size)
     this.cell.fill({ color: 0x00ff00, alpha: this.grass / Location.maxGrass })
-    this.cell.eventMode = 'static'
-    this.cell.cursor = 'pointer'
-    this.cell.onclick = () => {
-      console.log('clicked')
-      Location.appData.onClickCell(this.col, this.row)
-    }
   }
 
   growGrass() {
     this.grass += Location.grassRegrowthRate
     if (this.grass > Location.maxGrass) {
       this.grass = Location.maxGrass
+    }
+    this.updateCell()
+  }
+
+  reduceGrass(grassConsumed) {
+    this.grass -= grassConsumed
+    if (this.grass < 0) {
+      this.grass = 0
     }
     this.updateCell()
   }

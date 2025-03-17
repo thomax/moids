@@ -48,7 +48,7 @@
               },
             },
           },
-          responsive: true,
+          responsive: false,
           plugins: {
             legend: {
               display: false,

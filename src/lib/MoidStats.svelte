@@ -1,13 +1,19 @@
 <script>
   // @ts-nocheck
-  import LineChart from './LineChart.svelte'
+  import DualLineChart from './DualLineChart.svelte'
   import { onMount } from 'svelte'
+  import moidImagePath from '../assets/moid.png'
+  import foxoidImagePath from '../assets/foxoid.png'
 
   export let moids = []
   export let deadMoids = []
-  export let onSelectedMoid = null
   export let livingMoidCounts = []
   export let deadMoidCounts = []
+  export let foxoids = []
+  export let livingFoxoidCounts = []
+  export let onSelectedOid = () => {
+    console.warn('onSelectedOid not set')
+  }
 
   const sortablesTranslate = {
     name: 'name',
@@ -17,11 +23,15 @@
   }
 
   let sortSettings = {
-    living: {
+    livingMoids: {
       key: 'name',
       direction: 'asc',
     },
-    dead: {
+    deadMoids: {
+      key: 'name',
+      direction: 'asc',
+    },
+    livingFoxoids: {
       key: 'name',
       direction: 'asc',
     },
@@ -41,43 +51,95 @@
 
   function handleSortClicked(sortKey, arrayName) {
     const sortDirection = sortSettings[arrayName].direction === 'asc' ? 'desc' : 'asc'
-    if (arrayName === 'living') {
+    if (arrayName === 'livingMoids') {
       moids = sortArrayBy(moids, sortKey, sortDirection)
-    } else {
+    } else if (arrayName === 'deadMoids') {
       deadMoids = sortArrayBy(deadMoids, sortKey, sortDirection)
+    } else {
+      foxoids = sortArrayBy(foxoids, sortKey, sortDirection)
     }
     sortSettings[arrayName].key = sortKey
     sortSettings[arrayName].direction = sortDirection
   }
 
   // when arrays change, sort immediately
-  $: moids = sortArrayBy(moids, sortSettings.living.key, sortSettings.living.direction)
-  $: deadMoids = sortArrayBy(deadMoids, sortSettings.dead.key, sortSettings.dead.direction)
+  $: moids = sortArrayBy(moids, sortSettings.livingMoids.key, sortSettings.livingMoids.direction)
+  $: deadMoids = sortArrayBy(
+    deadMoids,
+    sortSettings.deadMoids.key,
+    sortSettings.deadMoids.direction
+  )
+  $: foxoids = sortArrayBy(
+    foxoids,
+    sortSettings.livingFoxoids.key,
+    sortSettings.livingFoxoids.direction
+  )
 </script>
 
 <div class="stats-container">
   <div class="chart">
-    <LineChart data={livingMoidCounts} lineColor="rgb(255, 255, 255)" label="Living Moids" />
+    <DualLineChart
+      data={livingMoidCounts}
+      lineColor="rgb(200, 200, 200)"
+      label="Moids"
+      secondaryData={livingFoxoidCounts}
+      secondaryLineColor="rgb(228, 108, 4)"
+      secondaryLabel="Foxoids"
+      secondaryOptions={{ beginAtZero: true, position: 'right' }}
+    />
   </div>
-  <div class="living">
+  <div class="livingFoxoids">
     <h2>
-      Alive {livingMoidCounts[livingMoidCounts.length - 1]}
+      <img src={foxoidImagePath} />
+      {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
       <span class="sortInfo"
-        >{sortablesTranslate[sortSettings.living.key]},{sortSettings.living.direction}</span
+        >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
+          .direction}</span
       >
     </h2>
     <ul>
       <li class="header">
-        <span on:click={handleSortClicked('name', 'living')}>Name</span>
-        <span on:click={handleSortClicked('generation', 'living')}>Gen</span>
-        <span on:click={handleSortClicked('offspringCount', 'living')}>Kids</span>
-        <span on:click={handleSortClicked('energy', 'living')}>Energy</span>
+        <span on:click={handleSortClicked('name', 'livingFoxoids')}>Name</span>
+        <span on:click={handleSortClicked('generation', 'livingFoxoids')}>Gen</span>
+        <span on:click={handleSortClicked('offspringCount', 'livingFoxoids')}>Kids</span>
+        <span on:click={handleSortClicked('energy', 'livingFoxoids')}>Energy</span>
+      </li>
+      {#each foxoids as foxoid}
+        <li>
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <span on:click={onSelectedOid(foxoid.id)} class={foxoid.isSelected ? 'selected' : ''}
+            >{foxoid.name}</span
+          >
+          <span>{foxoid.generation}</span>
+          <span>{foxoid.offspringCount}</span>
+          <span>{Math.floor(foxoid.energy)}</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
+
+  <div class="livingMoids">
+    <h2>
+      <img src={moidImagePath} />
+      {livingMoidCounts[livingMoidCounts.length - 1]}
+      <span class="sortInfo"
+        >{sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids
+          .direction}</span
+      >
+    </h2>
+    <ul>
+      <li class="header">
+        <span on:click={handleSortClicked('name', 'livingMoids')}>Name</span>
+        <span on:click={handleSortClicked('generation', 'livingMoids')}>Gen</span>
+        <span on:click={handleSortClicked('offspringCount', 'livingMoids')}>Kids</span>
+        <span on:click={handleSortClicked('energy', 'livingMoids')}>Energy</span>
       </li>
       {#each moids as moid}
         <li>
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <span on:click={onSelectedMoid(moid.id)} class={moid.isSelected ? 'selected' : ''}
+          <span on:click={onSelectedOid(moid.id)} class={moid.isSelected ? 'selected' : ''}
             >{moid.name}</span
           >
           <span>{moid.generation}</span>
@@ -87,19 +149,21 @@
       {/each}
     </ul>
   </div>
-  <div class="deceased">
+
+  <div class="deceasedMoids">
     <h2>
-      Dead {deadMoidCounts[deadMoidCounts.length - 1]}
+      💀<img src={moidImagePath} />
+      {deadMoidCounts[deadMoidCounts.length - 1]}
       <span class="sortInfo"
-        >{sortablesTranslate[sortSettings.dead.key]},{sortSettings.dead.direction}</span
+        >{sortablesTranslate[sortSettings.deadMoids.key]},{sortSettings.deadMoids.direction}</span
       >
     </h2>
     <ul>
       <li class="header">
-        <span on:click={handleSortClicked('name', 'dead')}>Name</span>
-        <span on:click={handleSortClicked('generation', 'dead')}>Gen</span>
-        <span on:click={handleSortClicked('offspringCount', 'dead')}>Kids</span>
-        <span on:click={handleSortClicked('energy', 'dead')}>Energy</span>
+        <span on:click={handleSortClicked('name', 'deadMoids')}>Name</span>
+        <span on:click={handleSortClicked('generation', 'deadMoids')}>Gen</span>
+        <span on:click={handleSortClicked('offspringCount', 'deadMoids')}>Kids</span>
+        <span on:click={handleSortClicked('energy', 'deadMoids')}>Energy</span>
       </li>
       {#each deadMoids as moid}
         <li>
@@ -128,6 +192,10 @@
     background-color: black;
   }
 
+  h2 img {
+    width: 32px;
+  }
+
   .sortInfo {
     font-size: 0.8rem;
     color: gray;
@@ -142,7 +210,7 @@
   li {
     color: white;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
   }
   li {
     text-align: right;
@@ -171,8 +239,8 @@
     margin-bottom: 7px;
   }
 
-  .living {
-    height: 40vh;
+  .livingFoxoids {
+    height: 20vh;
     overflow-y: auto;
     border: 1px solid gray;
     margin-bottom: 7px;
@@ -182,8 +250,19 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  .deceased {
-    height: 34vh;
+  .livingMoids {
+    height: 32vh;
+    overflow-y: auto;
+    border: 1px solid gray;
+    margin-bottom: 7px;
+    border: 1px solid gray;
+    padding: 0px 3px 0px 3px;
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .deceasedMoids {
+    height: 20vh;
     overflow-y: auto;
     border: 1px solid gray;
     padding: 0px 3px 0px 3px;

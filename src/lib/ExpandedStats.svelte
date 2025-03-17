@@ -107,10 +107,10 @@
     padding: 3px;
     margin-left: 10px;
     width: auto;
+    max-height: 96.5vh;
     font-family: 'Courier New', Courier, monospace;
     padding: 3px;
     color: white;
-    border: 1px solid gray;
   }
 
   h2 {
@@ -120,7 +120,7 @@
   }
 
   .chart {
-    max-height: 13vh;
+    border: 1px solid gray;
     margin: 0;
     padding: 3px;
     margin-bottom: 10px;
