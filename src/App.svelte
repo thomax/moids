@@ -120,20 +120,22 @@
         // If moid needs energy, eat
         const grassConsumed = moid.eat(currentLocation.grass)
         currentLocation.reduceGrass(grassConsumed)
-      } else if (moid.hasSufficientEnergy()) {
-        // If moid has energy, mate
-        const mate = moid.findOtherOidsPresent(moids)[0]
-        if (mate) {
-          let offspring = new Moid(moid.col, moid.row)
-          offspring = moid.createOffspringWith(offspring, mate)
-          moids.push(offspring)
-          playSound('spawnSound', appData)
-          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-        }
       } else {
-        // With nothing better to do, move to a random adjacent location
-        const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
-        moid.moveTo(nextCol, nextRow)
+        if (moid.hasSufficientEnergy() && moid.findOtherOidsPresent(moids)[0]) {
+          const mate = moid.findOtherOidsPresent(moids)[0]
+          // If moid has energy and mate in same cell, reproduce
+          if (mate) {
+            let offspring = new Moid(moid.col, moid.row)
+            offspring = moid.createOffspringWith(offspring, mate)
+            moids.push(offspring)
+            playSound('spawnSound', appData)
+            createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
+          }
+        } else {
+          // With nothing else to do, move to a random adjacent location
+          const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+          moid.moveTo(nextCol, nextRow)
+        }
       }
     })
     moids = moids.filter((m) => !newlyDeceasedMoids.includes(m))
@@ -162,20 +164,22 @@
         prey.die()
         moids = moids.filter((m) => m.id !== prey.id)
         deadMoids.push(prey)
-      } else if (foxoid.hasSufficientEnergy()) {
-        // If foxoid has energy, mate
-        const mate = foxoid.findOtherOidsPresent(foxoids)[0]
-        if (mate) {
-          let offspring = new Foxoid(foxoid.col, foxoid.row)
-          offspring = foxoid.createOffspringWith(offspring, mate)
-          foxoids.push(offspring)
-          playSound('spawnSound', appData)
-          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-        }
       } else {
-        // With nothing better to do, move to a random adjacent location
-        const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
-        foxoid.moveTo(nextCol, nextRow)
+        if (foxoid.hasSufficientEnergy() && foxoid.findOtherOidsPresent(foxoids)[0]) {
+          const mate = foxoid.findOtherOidsPresent(foxoids)[0]
+          // If foxoid has energy and mate available, reproduce
+          if (mate) {
+            let offspring = new Foxoid(foxoid.col, foxoid.row)
+            offspring = foxoid.createOffspringWith(offspring, mate)
+            foxoids.push(offspring)
+            playSound('spawnSound', appData)
+            createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
+          }
+        } else {
+          // With nothing else to do, move to a random adjacent location
+          const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+          foxoid.moveTo(nextCol, nextRow)
+        }
       }
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))

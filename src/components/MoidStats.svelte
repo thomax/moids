@@ -90,7 +90,7 @@
   </div>
   <div class="livingFoxoids">
     <h2>
-      <img src={foxoidImagePath} />
+      <span class="oid-header"><img src={foxoidImagePath} alt="Living foxoids" /></span>
       {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
       <span class="sortInfo"
         >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
@@ -121,7 +121,7 @@
 
   <div class="livingMoids">
     <h2>
-      <img src={moidImagePath} />
+      <span class="oid-header"><img src={moidImagePath} alt="Living moids" /></span>
       {livingMoidCounts[livingMoidCounts.length - 1]}
       <span class="sortInfo"
         >{sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids
@@ -152,7 +152,7 @@
 
   <div class="deceasedMoids">
     <h2>
-      💀<img src={moidImagePath} />
+      <span class="oid-header">💀<img src={moidImagePath} alt="Dead moids" /></span>
       {deadMoidCounts[deadMoidCounts.length - 1]}
       <span class="sortInfo"
         >{sortablesTranslate[sortSettings.deadMoids.key]},{sortSettings.deadMoids.direction}</span
@@ -181,6 +181,16 @@
   .stats-container {
     font-family: 'Courier New', Courier, monospace;
     padding: 0px 4px;
+  }
+
+  .oid-header {
+    padding-top: 5px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .oid-header img {
+    vertical-align: middle;
   }
 
   h2 {
