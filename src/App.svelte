@@ -7,14 +7,20 @@
   import { Moid } from './klasses/Moid.js'
   import { Foxoid } from './klasses/Foxoid.js'
   import OidsStatusPanel from './components/OidsStatusPanel.svelte'
+  import SettingsPanel from './components/SettingsPanel.svelte'
   import ExpandedStats from './components/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
   import deathSoundPath from './assets/death-effect.mp3'
   import { createDeathEffect, createSpawnEffect, playSound } from './utils/effects.js'
-  import { selectedDeploymentType } from './stores/globalStore.js'
+  import {
+    selectedDeploymentType,
+    showSettingsPanel,
+    simulationSettings,
+  } from './stores/globalStore.js'
 
-  const initialMoidCount = 30
-  const xCellCount = 30
+  // Use values from the store
+  $: initialMoidCount = $simulationSettings.initialMoidCount
+  $: xCellCount = $simulationSettings.xCellCount
 
   let oidFieldContainer
   let app
@@ -220,10 +226,12 @@
 
   onMount(async () => {
     await initApp()
+    Location.updateFromSettings()
+
     initLocations(appData, locations)
     // Create moids
     await initMoids(appData)
-    app.ticker.maxFPS = 1
+    app.ticker.maxFPS = $simulationSettings.maxFPS
     app.ticker.add((time) => {
       // this is the app run loop
       updateFoxoids()
@@ -253,6 +261,11 @@
   <ExpandedStats {moids} {foxoids} />
 </div>
 
+{#if $showSettingsPanel}
+  <div class="modal-overlay"></div>
+  <SettingsPanel />
+{/if}
+
 <style>
   #container {
     display: flex;
@@ -267,5 +280,15 @@
     height: 100vh;
     padding: 0;
     margin: 0;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 50;
   }
 </style>

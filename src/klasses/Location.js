@@ -1,11 +1,16 @@
 // @ts-nocheck
 import { Graphics } from 'pixi.js'
+import { get } from 'svelte/store'
+
+import { simulationSettings } from '../stores/globalStore.js'
+
 
 export class Location {
 
+  // Initialize with default values from the store
+  static maxGrass = get(simulationSettings).location.maxGrass
+  static grassRegrowthRate = get(simulationSettings).location.grassRegrowthRate
   static appData = null
-  static maxGrass = 150
-  static grassRegrowthRate = 0.5
   static directions = [
     { x: 0, y: -1 }, // up
     { x: 1, y: 0 }, // right
@@ -19,6 +24,11 @@ export class Location {
 
   static setAppData(appData) {
     Location.appData = appData
+  }
+
+  static updateFromSettings() {
+    Location.maxGrass = get(simulationSettings).location.maxGrass
+    Location.grassRegrowthRate = get(simulationSettings).location.grassRegrowthRate
   }
 
   constructor(col, row) {

@@ -1,7 +1,11 @@
 <script>
   // @ts-nocheck
   import { onMount } from 'svelte'
-  import { selectedDeploymentType } from '../stores/globalStore.js'
+  import {
+    selectedDeploymentType,
+    showSettingsPanel,
+    settingsPanelMode,
+  } from '../stores/globalStore.js'
   let chartContainer
   let chart
 
@@ -9,10 +13,14 @@
   const options = ['Grass', 'Moid', 'Foxoid']
   let selectedOption = options[1]
 
-  function selectOption(option) {
+  function selectDeploymentOption(option) {
     selectedOption = option
-    console.log('Selected option:', option)
     $selectedDeploymentType = option
+  }
+
+  function handleSettingsToggle(mode) {
+    $settingsPanelMode = mode
+    $showSettingsPanel = true
   }
 
   onMount(() => {
@@ -28,17 +36,23 @@
       class:first={i === 0}
       class:middle={i === 1}
       class:last={i === 2}
-      on:click={() => selectOption(option)}
+      onclick={() => selectDeploymentOption(option)}
     >
       {option}
     </button>
   {/each}
+  <button class="settings-button" onclick={() => handleSettingsToggle('settings')}>⚙️</button>
+  <button class="settings-button" onclick={() => handleSettingsToggle('help')}>Help</button>
 </div>
 
 <style>
   .buttons-container {
     display: flex;
     gap: 0;
+  }
+
+  .settings-button {
+    margin-left: auto;
   }
 
   button {
