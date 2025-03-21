@@ -17,8 +17,8 @@ export class Moid extends Oid {
     super(col, row, Moid.texture)
     const { cellSize } = Oid.appData
 
-    this.energy = 100
-    this.size = 150 // body size
+    this.energy = 300
+    this.size = 400 // body size
     this.metabolicRate = 3 // Energy consumed per turn
     this.feedingEfficiency = 0.2 // Amount of available grass the oid will eat
     this.foodEnergyConversion = 0.4 // Percentage of grass converted to oid energy

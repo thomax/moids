@@ -6,14 +6,14 @@
   import { Oid } from './klasses/Oid.js'
   import { Moid } from './klasses/Moid.js'
   import { Foxoid } from './klasses/Foxoid.js'
-  import MoidStats from './lib/MoidStats.svelte'
-  import ExpandedStats from './lib/ExpandedStats.svelte'
+  import MoidStats from './components/MoidStats.svelte'
+  import ExpandedStats from './components/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
   import deathSoundPath from './assets/death-effect.mp3'
   import { createDeathEffect, createSpawnEffect, playSound } from './utils/effects.js'
 
-  const initialMoidCount = 200
-  const xCellCount = 100
+  const initialMoidCount = 30
+  const xCellCount = 30
 
   let oidFieldContainer
   let app
@@ -194,8 +194,13 @@
   }
 
   function handleSelectedOid(oidId) {
-    const oid = [moids, foxoids].flat().find((oid) => oid.id === oidId)
-    oid.toggleSelected()
+    ;[moids, foxoids].flat().forEach((oid) => {
+      if (oid.id === oidId) {
+        oid.toggleSelected()
+      } else {
+        oid.isSelected = false
+      }
+    })
   }
 
   onMount(async () => {

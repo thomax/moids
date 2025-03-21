@@ -5,7 +5,7 @@ import { Oid } from './Oid.js'
 
 export class Foxoid extends Oid {
   static texture = null
-  static selectedTintColor = 0xff0000
+  static selectedTintColor = 0x0000ff
 
   static async loadTexture() {
     Foxoid.texture = await Assets.load(foxoidImagePath)
@@ -15,8 +15,8 @@ export class Foxoid extends Oid {
     super(col, row, Foxoid.texture)
 
     this.name = this.name + ' the Fox'
-    this.energy = 500
-    this.size = 500 // body size
+    this.energy = 2000
+    this.size = 3000 // body size
     this.metabolicRate = 3 // Energy consumed per turn
     this.feedingEfficiency = 1 // Amount of available food the oid will eat
     this.foodEnergyConversion = 1 // Percentage of food converted to oid energy
@@ -32,6 +32,8 @@ export class Foxoid extends Oid {
     return energyConsumed
   }
 
-  updateSprite() { }
+  updateSprite() {
+    this.sprite.tint = this.isSelected ? Foxoid.selectedTintColor : 0xffffff
+  }
 
 }
