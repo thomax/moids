@@ -1,7 +1,8 @@
 <script>
   // @ts-nocheck
-  import DualLineChart from './DualLineChart.svelte'
   import { onMount } from 'svelte'
+  import ButtonControls from './ButtonControls.svelte'
+  import DualLineChart from './DualLineChart.svelte'
   import moidImagePath from '../assets/moid.png'
   import foxoidImagePath from '../assets/foxoid.png'
 
@@ -76,7 +77,10 @@
   )
 </script>
 
-<div class="stats-container">
+<div class="panels-container">
+  <div class="buttons-container">
+    <ButtonControls />
+  </div>
   <div class="chart">
     <DualLineChart
       data={livingMoidCounts}
@@ -178,7 +182,7 @@
 </div>
 
 <style>
-  .stats-container {
+  .panels-container {
     font-family: 'Courier New', Courier, monospace;
     padding: 0px 4px;
   }
@@ -239,6 +243,14 @@
 
   .selected {
     color: red;
+  }
+
+  .buttons-container {
+    max-height: 20vh;
+    margin: 0;
+    border: 1px solid gray;
+    padding: 3px;
+    margin-bottom: 7px;
   }
 
   .chart {

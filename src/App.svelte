@@ -6,11 +6,12 @@
   import { Oid } from './klasses/Oid.js'
   import { Moid } from './klasses/Moid.js'
   import { Foxoid } from './klasses/Foxoid.js'
-  import MoidStats from './components/MoidStats.svelte'
+  import OidsStatusPanel from './components/OidsStatusPanel.svelte'
   import ExpandedStats from './components/ExpandedStats.svelte'
   import spawnSoundPath from './assets/spawn-effect.wav'
   import deathSoundPath from './assets/death-effect.mp3'
   import { createDeathEffect, createSpawnEffect, playSound } from './utils/effects.js'
+  import { selectedDeploymentType } from './stores/globalStore.js'
 
   const initialMoidCount = 30
   const xCellCount = 30
@@ -64,17 +65,27 @@
     appData.cellSize = cellSize
     appData.colCount = Math.floor(width / cellSize)
     appData.rowCount = Math.floor(height / cellSize)
+
     appData.onClickCell = (col, row) => {
       let oid
-      if (false) {
+      // selectedDeploymentType determines what to create
+      if ($selectedDeploymentType === 'Moid') {
         oid = new Moid(col, row)
         moids.push(oid)
-      } else {
+      } else if ($selectedDeploymentType === 'Foxoid') {
         oid = new Foxoid(col, row)
         foxoids.push(oid)
+      } else if ($selectedDeploymentType === 'Grass') {
+        const location = locations[col][row]
+        location.grass = Location.maxGrass
+        location.updateCell()
+        return
       }
-      playSound('spawnSound', appData)
-      createSpawnEffect(oid.sprite.x, oid.sprite.y, appData)
+
+      if (oid) {
+        playSound('spawnSound', appData)
+        createSpawnEffect(oid.sprite.x, oid.sprite.y, appData)
+      }
     }
     console.log('appData', appData)
     Oid.setAppData(appData)
@@ -230,7 +241,7 @@
 
 <div id="container">
   <div bind:this={oidFieldContainer} id="moid-field"></div>
-  <MoidStats
+  <OidsStatusPanel
     {moids}
     {deadMoids}
     {foxoids}
