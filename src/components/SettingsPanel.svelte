@@ -115,7 +115,11 @@
         <ul>
           <li><strong>Grass</strong> - Grows over time and provides energy for Moids</li>
           <li><strong>Moids</strong> - Herbivores that eat grass and reproduce</li>
-          <li><strong>Foxoids</strong> - Predators that hunt Moids and reproduce</li>
+          <li><strong>Foxoids</strong> - Predators that eat Moids and reproduce</li>
+          <li>
+            <strong>Genetics</strong> - On reproduction, Oid attributes might mutat. Observe genetic
+            drift over time in the five charts to the far right
+          </li>
         </ul>
 
         <h3>How to Use</h3>
@@ -123,7 +127,7 @@
           <li>Deploy extra grass, a Moid, or a Foxoid</li>
           <li>Select name of Moid or Foxoid in the lists to track it</li>
           <li>Adjust values in settings</li>
-          <li>Watch how the population changes over time in the chart</li>
+          <li>Observe how the population changes over time</li>
         </ul>
 
         <h3>About the Settings</h3>
@@ -133,6 +137,10 @@
           <li><strong>Simulation Speed</strong> - How fast the simulation runs (FPS)</li>
           <li><strong>Grass Growth Rate</strong> - How quickly grass regrows</li>
           <li><strong>Maximum Grass</strong> - Maximum amount of grass per cell</li>
+          <li>
+            <strong>Moid Metabolic Rate</strong> - How much energy a Moid spends per tick in order to
+            stay alive
+          </li>
         </ul>
       </div>
     {/if}
