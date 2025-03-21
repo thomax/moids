@@ -1,7 +1,9 @@
 // @ts-nocheck
+import { get } from 'svelte/store'
 import { Assets } from 'pixi.js'
 import moidImagePath from '../assets/moid.png'
 import { Oid } from './Oid.js'
+import { simulationSettings } from '../stores/globalStore.js'
 
 
 export class Moid extends Oid {
@@ -19,7 +21,7 @@ export class Moid extends Oid {
 
     this.energy = 300
     this.size = 400 // body size
-    this.metabolicRate = 3 // Energy consumed per turn
+    this.metabolicRate = get(simulationSettings)?.moid?.metabolicRate || 3// Energy consumed per turn
     this.feedingEfficiency = 0.2 // Amount of available grass the oid will eat
     this.foodEnergyConversion = 0.4 // Percentage of grass converted to oid energy
   }

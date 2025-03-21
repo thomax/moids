@@ -96,6 +96,17 @@
             max="500"
           />
         </div>
+
+        <div class="setting-group">
+          <label for="moidMetabolicRate">Moid Metabolic Rate:</label>
+          <input
+            type="number"
+            id="moidMetabolicRate"
+            bind:value={settings.moid.metabolicRate}
+            min="50"
+            max="500"
+          />
+        </div>
       </div>
     {:else}
       <div class="help-content">

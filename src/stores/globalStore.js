@@ -19,6 +19,9 @@ function getStoredSettings() {
     location: {
       grassRegrowthRate: 0.5,
       maxGrass: 150
+    },
+    moid: {
+      metabolicRate: 3
     }
   }
 }
