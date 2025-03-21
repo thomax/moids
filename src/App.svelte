@@ -16,6 +16,7 @@
     selectedDeploymentType,
     showSettingsPanel,
     simulationSettings,
+    isRunning,
   } from './stores/globalStore.js'
 
   // Use values from the store
@@ -224,21 +225,22 @@
     })
   }
 
+  function tickUpdate(time) {
+    if ($isRunning) {
+      updateFoxoids()
+      updateMoids()
+      updateLocations()
+    }
+  }
+
   onMount(async () => {
     await initApp()
     Location.updateFromSettings()
-
     initLocations(appData, locations)
     // Create moids
     await initMoids(appData)
     app.ticker.maxFPS = $simulationSettings.maxFPS
-    app.ticker.add((time) => {
-      // this is the app run loop
-      updateFoxoids()
-      updateMoids()
-      updateLocations()
-    })
-
+    app.ticker.add(tickUpdate)
     return () => {
       if (app) {
         app.destroy(true)
@@ -276,7 +278,7 @@
   }
 
   #moid-field {
-    width: 75vw;
+    width: 70vw;
     height: 100vh;
     padding: 0;
     margin: 0;

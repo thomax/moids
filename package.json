@@ -18,6 +18,7 @@
     "echarts": "^5.6.0",
     "gsap": "^3.12.7",
     "human-names": "^1.0.12",
-    "pixi.js": "^8.8.1"
+    "pixi.js": "^8.8.1",
+    "svelte-icons": "^2.1.0"
   }
 }

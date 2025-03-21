@@ -27,6 +27,7 @@ function getStoredSettings() {
 }
 
 export const selectedDeploymentType = writable('Moid') // Grass, Moid or Foxoid
+export const isRunning = writable(true)
 export const showSettingsPanel = writable(false)
 export const settingsPanelMode = writable('settings') // 'settings' or 'help'
 
