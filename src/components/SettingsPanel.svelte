@@ -99,8 +99,8 @@
       </div>
     {:else}
       <div class="help-content">
-        <h3>Simulation Controls</h3>
-        <p>This is a simple ecosystem simulation with these entities:</p>
+        <h3>Moids!</h3>
+        <p>A simple ecosystem simulation with</p>
         <ul>
           <li><strong>Grass</strong> - Grows over time and provides energy for Moids</li>
           <li><strong>Moids</strong> - Herbivores that eat grass and reproduce</li>
@@ -108,10 +108,10 @@
         </ul>
 
         <h3>How to Use</h3>
-        <p>Use the buttons at the top to select what you want to place in the simulation:</p>
         <ul>
-          <li>Click on a cell to add grass, a Moid, or a Foxoid</li>
-          <li>Click on a Moid or Foxoid in the lists to select and track it</li>
+          <li>Deploy extra grass, a Moid, or a Foxoid</li>
+          <li>Select name of Moid or Foxoid in the lists to track it</li>
+          <li>Adjust values in settings</li>
           <li>Watch how the population changes over time in the chart</li>
         </ul>
 
