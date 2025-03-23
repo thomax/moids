@@ -7,11 +7,12 @@
   import foxoidImagePath from '../assets/foxoid.png'
 
   export let moids = []
-  export let deadMoids = []
-  export let livingMoidCounts = []
-  export let deadMoidCounts = []
   export let foxoids = []
+  export let deadMoids = []
+  export let deadFoxoids = []
+  export let livingMoidCounts = []
   export let livingFoxoidCounts = []
+  export let deadOids = []
   export let onSelectedOid = () => {
     console.warn('onSelectedOid not set')
   }
@@ -28,7 +29,7 @@
       key: 'name',
       direction: 'asc',
     },
-    deadMoids: {
+    deadOids: {
       key: 'name',
       direction: 'asc',
     },
@@ -38,8 +39,8 @@
     },
   }
 
-  function sortArrayBy(moids, key, direction) {
-    return moids.sort((a, b) => {
+  function sortArrayBy(oids, key, direction) {
+    return oids.sort((a, b) => {
       if (a[key] < b[key]) {
         return direction === 'asc' ? -1 : 1
       }
@@ -54,8 +55,8 @@
     const sortDirection = sortSettings[arrayName].direction === 'asc' ? 'desc' : 'asc'
     if (arrayName === 'livingMoids') {
       moids = sortArrayBy(moids, sortKey, sortDirection)
-    } else if (arrayName === 'deadMoids') {
-      deadMoids = sortArrayBy(deadMoids, sortKey, sortDirection)
+    } else if (arrayName === 'deadOids') {
+      deadOids = sortArrayBy(deadOids, sortKey, sortDirection)
     } else {
       foxoids = sortArrayBy(foxoids, sortKey, sortDirection)
     }
@@ -65,10 +66,10 @@
 
   // when arrays change, sort immediately
   $: moids = sortArrayBy(moids, sortSettings.livingMoids.key, sortSettings.livingMoids.direction)
-  $: deadMoids = sortArrayBy(
-    deadMoids,
-    sortSettings.deadMoids.key,
-    sortSettings.deadMoids.direction
+  $: deadOids = sortArrayBy(
+    deadMoids.concat(deadFoxoids),
+    sortSettings.deadOids.key,
+    sortSettings.deadOids.direction
   )
   $: foxoids = sortArrayBy(
     foxoids,
@@ -94,12 +95,14 @@
   </div>
   <div class="livingFoxoids">
     <h2>
-      <span class="oid-header"><img src={foxoidImagePath} alt="Living foxoids" /></span>
-      {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
-      <span class="sortInfo"
-        >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
-          .direction}</span
-      >
+      <span class="oid-header"
+        ><img src={foxoidImagePath} alt="Living foxoids" />
+        {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
+        <span class="sortInfo"
+          >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
+            .direction}</span
+        >
+      </span>
     </h2>
     <ul>
       <li class="header">
@@ -125,12 +128,14 @@
 
   <div class="livingMoids">
     <h2>
-      <span class="oid-header"><img src={moidImagePath} alt="Living moids" /></span>
-      {livingMoidCounts[livingMoidCounts.length - 1]}
-      <span class="sortInfo"
-        >{sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids
-          .direction}</span
-      >
+      <span class="oid-header"
+        ><img src={moidImagePath} alt="Living moids" />
+        {livingMoidCounts[livingMoidCounts.length - 1]}
+        <span class="sortInfo"
+          >{sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids
+            .direction}</span
+        >
+      </span>
     </h2>
     <ul>
       <li class="header">
@@ -156,24 +161,27 @@
 
   <div class="deceasedMoids">
     <h2>
-      <span class="oid-header">💀<img src={moidImagePath} alt="Dead moids" /></span>
-      {deadMoidCounts[deadMoidCounts.length - 1]}
-      <span class="sortInfo"
-        >{sortablesTranslate[sortSettings.deadMoids.key]},{sortSettings.deadMoids.direction}</span
-      >
+      <span class="oid-header"
+        >💀
+
+        {deadOids.length}
+        <span class="sortInfo"
+          >{sortablesTranslate[sortSettings.deadOids.key]},{sortSettings.deadOids.direction}</span
+        >
+      </span>
     </h2>
     <ul>
       <li class="header">
-        <span on:click={handleSortClicked('name', 'deadMoids')}>Name</span>
-        <span on:click={handleSortClicked('generation', 'deadMoids')}>Gen</span>
-        <span on:click={handleSortClicked('offspringCount', 'deadMoids')}>Kids</span>
-        <span on:click={handleSortClicked('energy', 'deadMoids')}>Energy</span>
+        <span on:click={handleSortClicked('name', 'deadOids')}>Name</span>
+        <span on:click={handleSortClicked('generation', 'deadOids')}>Gen</span>
+        <span on:click={handleSortClicked('offspringCount', 'deadOids')}>Kids</span>
+        <span on:click={handleSortClicked('energy', 'deadOids')}>Energy</span>
       </li>
-      {#each deadMoids as moid}
+      {#each deadOids as oid}
         <li>
-          <span>{moid.name}</span>
-          <span>{moid.generation}</span>
-          <span>{moid.offspringCount}</span>
+          <span>{oid.name}</span>
+          <span>{oid.generation}</span>
+          <span>{oid.offspringCount}</span>
           <span>💀</span>
         </li>
       {/each}
@@ -191,6 +199,9 @@
     padding-top: 5px;
     display: inline-flex;
     align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
   }
 
   .oid-header img {

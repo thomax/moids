@@ -247,21 +247,21 @@
     gap: 10px;
   }
 
-  .whoDunnIt {
+  .whoDunnit {
     position: absolute;
     bottom: 70px;
     right: 20px;
-    font-size: 12px;
+    font-size: 1rem;
     color: #888;
     text-align: right;
   }
 
-  .whoDunnIt a {
+  .whoDunnit a {
     color: #888;
     text-decoration: none;
   }
 
-  .whoDunnIt a:hover {
+  .whoDunnit a:hover {
     text-decoration: underline;
     color: #aaa;
   }

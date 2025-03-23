@@ -33,9 +33,7 @@
   let foxoids = []
   let deadFoxoids = []
   let livingMoidCounts = []
-  let deadMoidCounts = []
   let livingFoxoidCounts = []
-  let deadFoxoidCounts = []
 
   async function initApp() {
     app = new Application()
@@ -160,8 +158,6 @@
     deadMoids = [...deadMoids, ...newlyDeceasedMoids]
     livingMoidCounts.push(moids.length)
     livingMoidCounts = [...livingMoidCounts]
-    deadMoidCounts.push(deadMoids.length)
-    deadMoidCounts = [...deadMoidCounts]
   }
 
   function updateFoxoids() {
@@ -201,8 +197,8 @@
       }
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
+    deadFoxoids = [...deadFoxoids, ...newlyDeceasedFoxoids]
     livingFoxoidCounts.push(foxoids.length)
-    deadFoxoidCounts.push(deadFoxoids.length)
   }
 
   function updateLocations() {
@@ -253,10 +249,10 @@
   <div bind:this={oidFieldContainer} id="moid-field"></div>
   <OidsStatusPanel
     {moids}
-    {deadMoids}
     {foxoids}
+    {deadMoids}
+    {deadFoxoids}
     {livingMoidCounts}
-    {deadMoidCounts}
     {livingFoxoidCounts}
     onSelectedOid={handleSelectedOid}
   />

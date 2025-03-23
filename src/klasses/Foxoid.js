@@ -15,7 +15,7 @@ export class Foxoid extends Oid {
     super(col, row, Foxoid.texture)
 
     this.name = this.name + ' the Fox'
-    this.energy = 2000
+    this.energy = 1000
     this.size = 3000 // body size
     this.metabolicRate = 3 // Energy consumed per turn
     this.feedingEfficiency = 1 // Amount of available food the oid will eat
