@@ -13,14 +13,10 @@ function getStoredSettings() {
       console.error('Failed to parse stored settings:', e)
     }
   }
-
-  // Use our comprehensive defaults
   return structuredClone(oidDefaults)
 }
 
-// Helper function to perform deep merge of objects
 function deepMerge(target, source) {
-  // For each property in source
   for (const key in source) {
     // If property is an object, recursively merge
     if (source[key] && typeof source[key] === 'object' &&
@@ -28,7 +24,6 @@ function deepMerge(target, source) {
       deepMerge(target[key], source[key])
     } else {
       // Otherwise just copy the value over
-      // Only copy the value if it exists in target (part of our schema)
       if (key in target) {
         target[key] = source[key]
       }

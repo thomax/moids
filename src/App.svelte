@@ -30,11 +30,10 @@
 
   const locations = []
   let moids = []
-  let deadMoids = []
   let foxoids = []
-  let deadFoxoids = []
   let livingMoidCounts = []
   let livingFoxoidCounts = []
+  let deadOidCount = 0
 
   async function initApp() {
     app = new Application()
@@ -155,7 +154,7 @@
       }
     })
     moids = moids.filter((m) => !newlyDeceasedMoids.includes(m))
-    deadMoids = [...deadMoids, ...newlyDeceasedMoids]
+    deadOidCount += newlyDeceasedMoids.length
     livingMoidCounts.push(moids.length)
     livingMoidCounts = [...livingMoidCounts]
   }
@@ -177,7 +176,7 @@
         const energyConsumed = foxoid.eat(prey.energy)
         prey.die()
         moids = moids.filter((m) => m.id !== prey.id)
-        deadMoids.push(prey)
+        deadOidCount++
       } else {
         if (foxoid.hasSufficientEnergy() && foxoid.findOtherOidsPresent(foxoids)[0]) {
           const mate = foxoid.findOtherOidsPresent(foxoids)[0]
@@ -197,7 +196,7 @@
       }
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
-    deadFoxoids = [...deadFoxoids, ...newlyDeceasedFoxoids]
+    deadOidCount += newlyDeceasedFoxoids.length
     livingFoxoidCounts.push(foxoids.length)
   }
 
@@ -250,10 +249,9 @@
   <OidsStatusPanel
     {moids}
     {foxoids}
-    {deadMoids}
-    {deadFoxoids}
     {livingMoidCounts}
     {livingFoxoidCounts}
+    {deadOidCount}
     onSelectedOid={handleSelectedOid}
   />
   <ExpandedStats {moids} {foxoids} />

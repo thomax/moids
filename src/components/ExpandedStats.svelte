@@ -52,7 +52,8 @@
 </script>
 
 <div class="stats-container">
-  <h2>Keep Moving Threshold</h2>
+  <h2>Moid Genetic Attributes</h2>
+  <h3>Keep Moving Threshold</h3>
   <div class="chart">
     <LineChart
       data={avgsKeepMovingThreshold}
@@ -61,7 +62,7 @@
       options={{ beginAtZero: false }}
     />
   </div>
-  <h2>Energy to Offspring</h2>
+  <h3>Energy to Offspring</h3>
   <div class="chart">
     <LineChart
       data={avgsEnergyGivenToOffspring}
@@ -71,7 +72,7 @@
     />
   </div>
 
-  <h2>Sufficient Energy Level</h2>
+  <h3>Sufficient Energy Level</h3>
   <div class="chart">
     <LineChart
       data={avgsSufficientEnergyLevel}
@@ -81,7 +82,7 @@
     />
   </div>
 
-  <h2>Mutation Rate</h2>
+  <h3>Mutation Rate</h3>
   <div class="chart">
     <LineChart
       data={avgsMutationRate}
@@ -91,7 +92,7 @@
     />
   </div>
 
-  <h2>Mutation Impact</h2>
+  <h3>Mutation Impact</h3>
   <div class="chart">
     <LineChart
       data={avgsMutationImpact}
@@ -113,7 +114,7 @@
     color: white;
   }
 
-  h2 {
+  h3 {
     font-size: 1rem;
     margin: 0px 3px;
     padding-left: 3px;

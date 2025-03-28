@@ -8,11 +8,9 @@
 
   export let moids = []
   export let foxoids = []
-  export let deadMoids = []
-  export let deadFoxoids = []
   export let livingMoidCounts = []
   export let livingFoxoidCounts = []
-  export let deadOids = []
+  export let deadOidCount = 0
   export let onSelectedOid = () => {
     console.warn('onSelectedOid not set')
   }
@@ -26,10 +24,6 @@
 
   let sortSettings = {
     livingMoids: {
-      key: 'name',
-      direction: 'asc',
-    },
-    deadOids: {
       key: 'name',
       direction: 'asc',
     },
@@ -55,8 +49,6 @@
     const sortDirection = sortSettings[arrayName].direction === 'asc' ? 'desc' : 'asc'
     if (arrayName === 'livingMoids') {
       moids = sortArrayBy(moids, sortKey, sortDirection)
-    } else if (arrayName === 'deadOids') {
-      deadOids = sortArrayBy(deadOids, sortKey, sortDirection)
     } else {
       foxoids = sortArrayBy(foxoids, sortKey, sortDirection)
     }
@@ -66,11 +58,6 @@
 
   // when arrays change, sort immediately
   $: moids = sortArrayBy(moids, sortSettings.livingMoids.key, sortSettings.livingMoids.direction)
-  $: deadOids = sortArrayBy(
-    deadMoids.concat(deadFoxoids),
-    sortSettings.deadOids.key,
-    sortSettings.deadOids.direction
-  )
   $: foxoids = sortArrayBy(
     foxoids,
     sortSettings.livingFoxoids.key,
@@ -159,33 +146,17 @@
     </ul>
   </div>
 
-  <div class="deceasedMoids">
+  <div class="deceasedOids">
     <h2>
       <span class="oid-header"
-        >💀
-
-        {deadOids.length}
-        <span class="sortInfo"
-          >{sortablesTranslate[sortSettings.deadOids.key]},{sortSettings.deadOids.direction}</span
-        >
+        ><img src={moidImagePath} alt="Dead moids" /><img
+          src={foxoidImagePath}
+          alt="Dead foxoids"
+        />
+        Deaths:
+        {deadOidCount}
       </span>
     </h2>
-    <ul>
-      <li class="header">
-        <span on:click={handleSortClicked('name', 'deadOids')}>Name</span>
-        <span on:click={handleSortClicked('generation', 'deadOids')}>Gen</span>
-        <span on:click={handleSortClicked('offspringCount', 'deadOids')}>Kids</span>
-        <span on:click={handleSortClicked('energy', 'deadOids')}>Energy</span>
-      </li>
-      {#each deadOids as oid}
-        <li>
-          <span>{oid.name}</span>
-          <span>{oid.generation}</span>
-          <span>{oid.offspringCount}</span>
-          <span>💀</span>
-        </li>
-      {/each}
-    </ul>
   </div>
 </div>
 
@@ -273,7 +244,7 @@
   }
 
   .livingFoxoids {
-    height: 20vh;
+    height: 35vh;
     overflow-y: auto;
     border: 1px solid gray;
     margin-bottom: 7px;
@@ -284,7 +255,7 @@
   }
 
   .livingMoids {
-    height: 32vh;
+    height: 35vh;
     overflow-y: auto;
     border: 1px solid gray;
     margin-bottom: 7px;
@@ -294,8 +265,8 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  .deceasedMoids {
-    height: 20vh;
+  .deceasedOids {
+    height: 5vh;
     overflow-y: auto;
     border: 1px solid gray;
     padding: 0px 3px 0px 3px;
