@@ -1,12 +1,20 @@
 <script>
   // @ts-nocheck
   import { onMount } from 'svelte'
-  import { MdPause, MdPlayArrow, MdSettings, MdHelp } from 'svelte-icons/md/'
+  import {
+    MdPause,
+    MdPlayArrow,
+    MdSettings,
+    MdHelp,
+    MdVolumeOff,
+    MdVolumeUp,
+  } from 'svelte-icons/md/'
   import {
     selectedDeploymentType,
     showSettingsPanel,
     settingsPanelMode,
     isRunning,
+    isMuted,
   } from '../stores/globalStore.js'
   let chartContainer
   let chart
@@ -29,6 +37,10 @@
     $isRunning = !$isRunning
   }
 
+  function handleMuteToggle() {
+    $isMuted = !$isMuted
+  }
+
   onMount(() => {
     $selectedDeploymentType = selectedOption
   })
@@ -47,33 +59,53 @@
     </button>
   {/each}
 
-  <button class="control-button settings-button" onclick={() => handleRunToggle()}>
-    <div class="icon-wrapper">
-      {#if $isRunning}
-        <MdPause />
-      {:else}
-        <MdPlayArrow />
-      {/if}
-    </div>
-  </button>
+  <div class="settings-buttons-container">
+    <button class="settings-button" onclick={() => handleRunToggle()}>
+      <div class="icon-wrapper">
+        {#if $isRunning}
+          <MdPause />
+        {:else}
+          <MdPlayArrow />
+        {/if}
+      </div>
+    </button>
 
-  <button class="control-button settings-button" onclick={() => handleSettingsToggle('settings')}>
-    <div class="icon-wrapper">
-      <MdSettings />
-    </div>
-  </button>
+    <button class="settings-button" onclick={() => handleMuteToggle()}>
+      <div class="icon-wrapper">
+        {#if $isMuted}
+          <MdVolumeOff />
+        {:else}
+          <MdVolumeUp />
+        {/if}
+      </div>
+    </button>
 
-  <button class="control-button settings-button" onclick={() => handleSettingsToggle('help')}>
-    <div class="icon-wrapper">
-      <MdHelp />
-    </div>
-  </button>
+    <button class="settings-button" onclick={() => handleSettingsToggle('settings')}>
+      <div class="icon-wrapper">
+        <MdSettings />
+      </div>
+    </button>
+
+    <button class="settings-button" onclick={() => handleSettingsToggle('help')}>
+      <div class="icon-wrapper">
+        <MdHelp />
+      </div>
+    </button>
+  </div>
 </div>
 
 <style>
   .buttons-container {
     display: flex;
     gap: 0;
+    padding-right: 0px;
+  }
+
+  .settings-buttons-container {
+    display: flex;
+    gap: 5px;
+    padding-left: 5px;
+    padding-right: 0px;
   }
 
   .icon-wrapper {
@@ -90,22 +122,17 @@
   }
 
   .settings-button {
-    margin-left: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 4px 8px;
-  }
-
-  .control-button {
     border-radius: 3px;
-    margin-right: 5px;
   }
 
   button {
     font-family: Arial, Helvetica, sans-serif;
     color: green;
-    padding: 4px 8px;
+    padding: 4px 6px;
     background-color: black;
     cursor: pointer;
     transition: all 0.2s ease;

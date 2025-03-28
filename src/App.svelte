@@ -17,6 +17,7 @@
     showSettingsPanel,
     simulationSettings,
     isRunning,
+    isMuted,
   } from './stores/globalStore.js'
 
   // Use values from the store
@@ -88,7 +89,7 @@
       }
 
       if (oid) {
-        playSound('spawnSound', appData)
+        if (!$isMuted) playSound('spawnSound', appData)
         createSpawnEffect(oid.sprite.x, oid.sprite.y, appData)
       }
     }
@@ -127,7 +128,7 @@
     moids.forEach((moid) => {
       const isDead = !moid.metabolize()
       if (isDead) {
-        playSound('deathSound', appData)
+        if (!$isMuted) playSound('deathSound', appData)
         newlyDeceasedMoids.push(moid)
         return
       }
@@ -144,7 +145,7 @@
             let offspring = new Moid(moid.col, moid.row)
             offspring = moid.createOffspringWith(offspring, mate)
             moids.push(offspring)
-            playSound('spawnSound', appData)
+            if (!$isMuted) playSound('spawnSound', appData)
             createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
           }
         } else {
@@ -165,7 +166,7 @@
     foxoids.forEach((foxoid) => {
       const isDead = !foxoid.metabolize()
       if (isDead) {
-        playSound('deathSound', appData)
+        if (!$isMuted) playSound('deathSound', appData)
         newlyDeceasedFoxoids.push(foxoid)
         return
       }
@@ -186,7 +187,7 @@
             let offspring = new Foxoid(foxoid.col, foxoid.row)
             offspring = foxoid.createOffspringWith(offspring, mate)
             foxoids.push(offspring)
-            playSound('spawnSound', appData)
+            if (!$isMuted) playSound('spawnSound', appData)
             createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
           }
         } else {

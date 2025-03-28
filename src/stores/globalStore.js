@@ -62,6 +62,7 @@ function createSettingsStore() {
 
 export const selectedDeploymentType = writable('Moid') // Grass, Moid or Foxoid
 export const isRunning = writable(true)
+export const isMuted = writable(false)
 export const showSettingsPanel = writable(false)
 export const settingsPanelMode = writable('settings') // 'settings' or 'help'
 export const simulationSettings = createSettingsStore()
