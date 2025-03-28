@@ -1,7 +1,9 @@
 // @ts-nocheck
+import { get } from 'svelte/store'
 import { Assets } from 'pixi.js'
 import foxoidImagePath from '../assets/foxoid.png'
 import { Oid } from './Oid.js'
+import { simulationSettings } from '../stores/globalStore.js'
 
 export class Foxoid extends Oid {
   static texture = null
@@ -14,12 +16,23 @@ export class Foxoid extends Oid {
   constructor(col, row) {
     super(col, row, Foxoid.texture)
 
+    // Get settings from the store
+    const foxoidSettings = get(simulationSettings).foxoid
+
+    // Apply settings from store
     this.name = this.name + ' the Fox'
-    this.energy = 1000
-    this.size = 3000 // body size
-    this.metabolicRate = 3 // Energy consumed per turn
-    this.feedingEfficiency = 1 // Amount of available food the oid will eat
-    this.foodEnergyConversion = 1 // Percentage of food converted to oid energy
+    this.energy = foxoidSettings.energy
+    this.size = foxoidSettings.size
+    this.metabolicRate = foxoidSettings.metabolicRate
+    this.feedingEfficiency = foxoidSettings.feedingEfficiency
+    this.foodEnergyConversion = foxoidSettings.foodEnergyConversion
+
+    // Apply genetic traits
+    this.keepMovingThreshold = foxoidSettings.keepMovingThreshold
+    this.energyGivenToOffspring = foxoidSettings.energyGivenToOffspring
+    this.sufficientEnergyLevel = foxoidSettings.sufficientEnergyLevel
+    this.mutationRate = foxoidSettings.mutationRate
+    this.mutationImpact = foxoidSettings.mutationImpact
   }
 
   eat(moidSize) {
@@ -35,5 +48,4 @@ export class Foxoid extends Oid {
   updateSprite() {
     this.sprite.tint = this.isSelected ? Foxoid.selectedTintColor : 0xffffff
   }
-
 }

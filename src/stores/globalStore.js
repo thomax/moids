@@ -1,29 +1,40 @@
 import { writable } from 'svelte/store'
+import { oidDefaults } from '../utils/defaults.js'
 
-// Load settings from localStorage or use defaults
+// Load settings from localStorage and merge with defaults to ensure all required properties exist
 function getStoredSettings() {
   const storedSettings = localStorage.getItem('moids-simulation-settings')
   if (storedSettings) {
     try {
-      return JSON.parse(storedSettings)
+      // Deep merge stored settings with defaults to ensure all properties exist
+      const parsedSettings = JSON.parse(storedSettings)
+      return deepMerge(structuredClone(oidDefaults), parsedSettings)
     } catch (e) {
       console.error('Failed to parse stored settings:', e)
     }
   }
 
-  // Default settings
-  return {
-    initialMoidCount: 30,
-    xCellCount: 30,
-    maxFPS: 1,
-    location: {
-      grassRegrowthRate: 0.5,
-      maxGrass: 150
-    },
-    moid: {
-      metabolicRate: 3
+  // Use our comprehensive defaults
+  return structuredClone(oidDefaults)
+}
+
+// Helper function to perform deep merge of objects
+function deepMerge(target, source) {
+  // For each property in source
+  for (const key in source) {
+    // If property is an object, recursively merge
+    if (source[key] && typeof source[key] === 'object' &&
+      target[key] && typeof target[key] === 'object') {
+      deepMerge(target[key], source[key])
+    } else {
+      // Otherwise just copy the value over
+      // Only copy the value if it exists in target (part of our schema)
+      if (key in target) {
+        target[key] = source[key]
+      }
     }
   }
+  return target
 }
 
 // Create a custom store that syncs with localStorage

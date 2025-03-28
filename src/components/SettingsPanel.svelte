@@ -7,10 +7,15 @@
     simulationSettings,
   } from '../stores/globalStore.js'
   import { Location } from '../klasses/Location.js'
+  import { Moid } from '../klasses/Moid.js'
+  import { Foxoid } from '../klasses/Foxoid.js'
+  import locationImagePath from '../assets/location.png'
+  import moidImagePath from '../assets/moid.png'
+  import foxoidImagePath from '../assets/foxoid.png'
 
   // Local copy of settings that we'll edit
   let settings = { ...$simulationSettings }
-
+  console.log('settings', settings)
   function toggleMode() {
     $settingsPanelMode = $settingsPanelMode === 'settings' ? 'help' : 'settings'
   }
@@ -23,7 +28,7 @@
     // Update the store with new settings
     $simulationSettings = { ...settings }
 
-    // Pass the new settings directly to the Location class
+    // Pass the new settings directly to the necessary classes
     Location.updateFromSettings()
 
     // Close the panel and trigger a page reload to restart the simulation
@@ -46,66 +51,211 @@
   <div class="settings-content">
     {#if $settingsPanelMode === 'settings'}
       <div class="settings-form">
-        <div class="setting-group">
-          <label for="initialMoidCount">Initial Moid Count:</label>
-          <input
-            type="number"
-            id="initialMoidCount"
-            bind:value={settings.initialMoidCount}
-            min="1"
-            max="100"
-          />
+        <!-- Global Settings Section -->
+        <div class="settings-section">
+          <h3>Global Settings</h3>
+          <div class="settings-grid">
+            <div class="setting-group">
+              <label for="initialMoidCount">Initial Moid Count:</label>
+              <input
+                type="number"
+                id="initialMoidCount"
+                bind:value={settings.initialMoidCount}
+                min="1"
+                max="500"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="xCellCount">Grid Size (cells):</label>
+              <input
+                type="number"
+                id="xCellCount"
+                bind:value={settings.xCellCount}
+                min="10"
+                max="100"
+                step="1"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="maxFPS">Simulation Speed (FPS):</label>
+              <input
+                type="number"
+                id="maxFPS"
+                bind:value={settings.maxFPS}
+                min="1"
+                max="60"
+                step="1"
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="setting-group">
-          <label for="xCellCount">Grid Size (cells):</label>
-          <input type="number" id="xCellCount" bind:value={settings.xCellCount} min="10" max="50" />
+        <!-- Location Settings Section -->
+        <div class="settings-section">
+          <h3>
+            <img src={locationImagePath} alt="Location" /> Location Settings
+            <img src={locationImagePath} alt="Location" />
+          </h3>
+          <div class="settings-grid">
+            <div class="setting-group">
+              <label for="grassRegrowthRate">Grass Growth Rate:</label>
+              <input
+                type="number"
+                id="grassRegrowthRate"
+                bind:value={settings.location.grassRegrowthRate}
+                min="0"
+                max="50"
+                step="0.1"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="maxGrass">Max Grass Amount:</label>
+              <input
+                type="number"
+                id="maxGrass"
+                bind:value={settings.location.maxGrass}
+                min="10"
+                max="500"
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="setting-group">
-          <label for="maxFPS">Simulation Speed (FPS):</label>
-          <input
-            type="number"
-            id="maxFPS"
-            bind:value={settings.maxFPS}
-            min="0.2"
-            max="10"
-            step="0.1"
-          />
+        <!-- Moid Settings Section -->
+        <div class="settings-section">
+          <h3>
+            <img src={moidImagePath} alt="Moid" /> Moid Settings
+            <img src={moidImagePath} alt="Moids" />
+          </h3>
+          <div class="settings-grid">
+            <div class="setting-group">
+              <label for="moidEnergy">Starting Energy:</label>
+              <input
+                type="number"
+                id="moidEnergy"
+                bind:value={settings.moid.energy}
+                min="10"
+                max="1000"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="moidSize">Max Energy:</label>
+              <input
+                type="number"
+                id="moidSize"
+                bind:value={settings.moid.size}
+                min="50"
+                max="2000"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="moidMetabolicRate">Metabolic Rate:</label>
+              <input
+                type="number"
+                id="moidMetabolicRate"
+                bind:value={settings.moid.metabolicRate}
+                min="0.1"
+                max="30"
+                step="0.1"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="moidFeedingEfficiency">Feeding Efficiency:</label>
+              <input
+                type="number"
+                id="moidFeedingEfficiency"
+                bind:value={settings.moid.feedingEfficiency}
+                min="0.1"
+                max="1"
+                step="0.05"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="moidFoodEnergy">Food Energy Conversion:</label>
+              <input
+                type="number"
+                id="moidFoodEnergy"
+                bind:value={settings.moid.foodEnergyConversion}
+                min="0.1"
+                max="1"
+                step="0.05"
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="setting-group">
-          <label for="grassRegrowthRate">Grass Growth Rate:</label>
-          <input
-            type="number"
-            id="grassRegrowthRate"
-            bind:value={settings.location.grassRegrowthRate}
-            min="0.1"
-            max="5"
-            step="0.1"
-          />
-        </div>
+        <!-- Foxoid Settings Section -->
+        <div class="settings-section">
+          <h3>
+            <img src={foxoidImagePath} alt="Foxoid" /> Foxoid Settings
+            <img src={foxoidImagePath} alt="Foxoid" />
+          </h3>
+          <div class="settings-grid">
+            <div class="setting-group">
+              <label for="foxoidEnergy">Starting Energy:</label>
+              <input
+                type="number"
+                id="foxoidEnergy"
+                bind:value={settings.foxoid.energy}
+                min="50"
+                max="10000"
+              />
+            </div>
 
-        <div class="setting-group">
-          <label for="maxGrass">Maximum Grass Amount:</label>
-          <input
-            type="number"
-            id="maxGrass"
-            bind:value={settings.location.maxGrass}
-            min="50"
-            max="500"
-          />
-        </div>
+            <div class="setting-group">
+              <label for="foxoidSize">Max Energy:</label>
+              <input
+                type="number"
+                id="foxoidSize"
+                bind:value={settings.foxoid.size}
+                min="100"
+                max="10000"
+              />
+            </div>
 
-        <div class="setting-group">
-          <label for="moidMetabolicRate">Moid Metabolic Rate:</label>
-          <input
-            type="number"
-            id="moidMetabolicRate"
-            bind:value={settings.moid.metabolicRate}
-            min="50"
-            max="500"
-          />
+            <div class="setting-group">
+              <label for="foxoidMetabolicRate">Metabolic Rate:</label>
+              <input
+                type="number"
+                id="foxoidMetabolicRate"
+                bind:value={settings.foxoid.metabolicRate}
+                min="0.1"
+                max="20"
+                step="0.1"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="foxoidFeedingEfficiency">Feeding Efficiency:</label>
+              <input
+                type="number"
+                id="foxoidFeedingEfficiency"
+                bind:value={settings.foxoid.feedingEfficiency}
+                min="0.1"
+                max="1"
+                step="0.05"
+              />
+            </div>
+
+            <div class="setting-group">
+              <label for="foxoidFoodEnergy">Food Energy Conversion:</label>
+              <input
+                type="number"
+                id="foxoidFoodEnergy"
+                bind:value={settings.foxoid.foodEnergyConversion}
+                min="0.1"
+                max="1"
+                step="0.05"
+              />
+            </div>
+          </div>
         </div>
       </div>
     {:else}
@@ -117,7 +267,7 @@
           <li><strong>Moids</strong> - Herbivores that eat grass and reproduce</li>
           <li><strong>Foxoids</strong> - Predators that eat Moids and reproduce</li>
           <li>
-            <strong>Genetics</strong> - On reproduction, Oid attributes might mutat. Observe genetic
+            <strong>Genetics</strong> - On reproduction, Oid attributes might mutate. Observe genetic
             drift over time in the five charts to the far right
           </li>
         </ul>
@@ -133,23 +283,25 @@
         <h3>About the Settings</h3>
         <ul>
           <li><strong>Initial Moid Count</strong> - Number of Moids at simulation start</li>
-          <li><strong>Grid Size</strong> - Number of cells in the simulation grid</li>
+          <li><strong>Grid Size</strong> - Number of locations per row in the simulation grid</li>
           <li><strong>Simulation Speed</strong> - How fast the simulation runs (FPS)</li>
           <li><strong>Grass Growth Rate</strong> - How quickly grass regrows</li>
-          <li><strong>Maximum Grass</strong> - Maximum amount of grass per cell</li>
+          <li><strong>Maximum Grass</strong> - Maximum amount of grass per location</li>
+          <li><strong>Metabolic Rate</strong> - How much energy an oid spends per tick</li>
+          <li><strong>Feeding Efficiency</strong> - How much food an entity can consume</li>
           <li>
-            <strong>Moid Metabolic Rate</strong> - How much energy a Moid spends per tick in order to
-            stay alive
+            <strong>Food Energy Conversion</strong> - How efficiently food is converted to energy
           </li>
+          <li><strong>Max Energy</strong> - Determines the maximum energy capacity</li>
         </ul>
       </div>
     {/if}
   </div>
 
   {#if $settingsPanelMode === 'help'}
-    <div class="whoDunnit">
-      Created by <a href="https://github.com/thomax/scrambled-groups" target="_blank">thomax</a> with
-      🤨, 💚 and ☕️
+    <div class="whoDunnIt">
+      Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚 and
+      ☕️
     </div>
   {/if}
 
@@ -212,10 +364,22 @@
     padding-right: 10px;
   }
 
-  .settings-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  .settings-section {
+    margin-bottom: 50px;
+  }
+
+  .settings-section h3 {
+    color: #eee;
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #333;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
   }
 
   .setting-group {
@@ -247,7 +411,7 @@
     gap: 10px;
   }
 
-  .whoDunnit {
+  .whoDunnIt {
     position: absolute;
     bottom: 70px;
     right: 20px;
@@ -256,12 +420,12 @@
     text-align: right;
   }
 
-  .whoDunnit a {
+  .whoDunnIt a {
     color: #888;
     text-decoration: none;
   }
 
-  .whoDunnit a:hover {
+  .whoDunnIt a:hover {
     text-decoration: underline;
     color: #aaa;
   }

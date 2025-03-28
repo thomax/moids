@@ -24,18 +24,6 @@ export class Oid {
     this.offspringCount = 0
     this.speed = 1 // movement speed, unused
 
-    // this.energy = 100
-    // this.metabolicRate = 3 // Energy consumed per turn
-    // this.feedingEfficiency = 0.2 // Amount of available grass the oid will eat
-    // this.foodEnergyConversion = 0.4 // Percentage of grass converted to oid energy
-    // this.size = 150 // body size
-
-    // Genetic traits
-    this.keepMovingThreshold = 25 // Grass level above which the oid will stop to eat
-    this.energyGivenToOffspring = 0.3
-    this.sufficientEnergyLevel = 0.8 // Energy level at which the oid will stop eating
-    this.mutationRate = 0.1 // Chance of mutation occurring during reproduction
-    this.mutationImpact = 0.1 // Impact of mutation on a trait
     // UI thingy
     this.isSelected = false
     this.assignSprite(texture)

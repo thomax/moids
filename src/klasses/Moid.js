@@ -5,7 +5,6 @@ import moidImagePath from '../assets/moid.png'
 import { Oid } from './Oid.js'
 import { simulationSettings } from '../stores/globalStore.js'
 
-
 export class Moid extends Oid {
   static texture = null
   static selectedTintColor = 0xff00ff
@@ -19,11 +18,22 @@ export class Moid extends Oid {
     super(col, row, Moid.texture)
     const { cellSize } = Oid.appData
 
-    this.energy = 300
-    this.size = 400 // body size
-    this.metabolicRate = get(simulationSettings)?.moid?.metabolicRate || 3// Energy consumed per turn
-    this.feedingEfficiency = 0.2 // Amount of available grass the oid will eat
-    this.foodEnergyConversion = 0.4 // Percentage of grass converted to oid energy
+    // Get settings from the store
+    const moidSettings = get(simulationSettings).moid
+
+    // Apply settings from store
+    this.energy = moidSettings.energy
+    this.size = moidSettings.size
+    this.metabolicRate = moidSettings.metabolicRate
+    this.feedingEfficiency = moidSettings.feedingEfficiency
+    this.foodEnergyConversion = moidSettings.foodEnergyConversion
+
+    // Apply genetic traits
+    this.keepMovingThreshold = moidSettings.keepMovingThreshold
+    this.energyGivenToOffspring = moidSettings.energyGivenToOffspring
+    this.sufficientEnergyLevel = moidSettings.sufficientEnergyLevel
+    this.mutationRate = moidSettings.mutationRate
+    this.mutationImpact = moidSettings.mutationImpact
   }
 
   eat(grassAmount) {
@@ -39,5 +49,4 @@ export class Moid extends Oid {
   updateSprite() {
     this.sprite.tint = this.isSelected ? Moid.selectedTintColor : 0xffffff
   }
-
 }
