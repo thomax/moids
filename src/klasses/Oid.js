@@ -56,7 +56,11 @@ export class Oid {
   }
 
   die() {
-    this.sprite.removeFromParent()
+    if (this.sprite) {
+      this.sprite.removeFromParent()
+      this.sprite.destroy({ children: true, texture: false, baseTexture: false })
+      this.sprite = null
+    }
   }
 
   createOffspringWith(offspring, mate) {
@@ -90,6 +94,7 @@ export class Oid {
     const finalY = newRow * cellSize + cellSize / 2
     let tempX
     let tempY
+
     // Perform movement in three steps
     // If the oid isn't wrapping the field, move straight to third step
     if (isWrappingX || isWrappingY) {
