@@ -11,7 +11,6 @@ export class Moid extends Oid {
 
   static async loadTexture() {
     Moid.texture = await Assets.load(moidImagePath)
-    console.log('Moid texture loaded')
   }
 
   constructor(col, row) {

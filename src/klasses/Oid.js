@@ -27,7 +27,6 @@ export class Oid {
     // UI thingy
     this.isSelected = false
     this.assignSprite(texture)
-    console.info(`New ${this.constructor.name}`, this.name, this.id, `${this.col},${this.row}!`)
   }
 
   getMaxEnergy() {
@@ -57,7 +56,6 @@ export class Oid {
   }
 
   die() {
-    console.info(this.name, 'died', '🏴‍☠️')
     this.sprite.removeFromParent()
   }
 
@@ -79,7 +77,6 @@ export class Oid {
       if (Math.random() < parent.mutationRate) {
         const upOrDown = Math.random() < 0.5 ? -1 : 1
         offspring[trait] = round(parent[trait] + (parent[trait] * parent.mutationImpact * upOrDown))
-        //console.info('Mutation!', trait, parent[trait], parent.mutationImpact, '-->', offspring[trait])
       }
     })
     return offspring

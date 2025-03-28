@@ -93,7 +93,6 @@
         createSpawnEffect(oid.sprite.x, oid.sprite.y, appData)
       }
     }
-    console.log('appData', appData)
     Oid.setAppData(appData)
     Location.setAppData(appData)
   }

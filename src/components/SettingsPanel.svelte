@@ -12,16 +12,23 @@
   import locationImagePath from '../assets/location.png'
   import moidImagePath from '../assets/moid.png'
   import foxoidImagePath from '../assets/foxoid.png'
+  import { oidDefaults } from '../utils/defaults.js'
 
   // Local copy of settings that we'll edit
   let settings = { ...$simulationSettings }
-  console.log('settings', settings)
+
   function toggleMode() {
     $settingsPanelMode = $settingsPanelMode === 'settings' ? 'help' : 'settings'
   }
 
   function closePanel() {
     $showSettingsPanel = false
+  }
+
+  function resetToDefaults() {
+    if (confirm('Are you sure you want to reset all settings to default values?')) {
+      settings = structuredClone(oidDefaults)
+    }
   }
 
   function saveAndRestart() {
@@ -67,7 +74,7 @@
             </div>
 
             <div class="setting-group">
-              <label for="xCellCount">Grid Size (cells):</label>
+              <label for="xCellCount">Cells pr. row:</label>
               <input
                 type="number"
                 id="xCellCount"
@@ -307,8 +314,11 @@
 
   <div class="settings-footer">
     {#if $settingsPanelMode === 'settings'}
-      <button on:click={saveAndRestart} class="primary-button">Save & Restart Simulation</button>
-      <button on:click={closePanel}>Cancel</button>
+      <div class="settings-actions">
+        <button on:click={saveAndRestart} class="primary-button">Save & Restart Simulation</button>
+        <button on:click={resetToDefaults} class="reset-button">Reset to default settings</button>
+        <button on:click={closePanel}>Cancel</button>
+      </div>
     {:else}
       <button on:click={closePanel}>Close</button>
     {/if}
@@ -409,6 +419,23 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+  }
+
+  .settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .reset-button {
+    background-color: #541414;
+    border-color: #6b1a1a;
+    color: #eee;
+  }
+
+  .reset-button:hover {
+    background-color: #761c1c;
   }
 
   .whoDunnIt {

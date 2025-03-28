@@ -79,5 +79,4 @@ export function playSound(soundName, appData) {
   source.connect(gainNode)
   gainNode.connect(appData.audioContext.destination)
   source.start(0)
-  console.log('Playing sound:', soundName)
 }
