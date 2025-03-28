@@ -71,6 +71,7 @@
               position: 'left',
               ticks: {
                 display: true,
+                color: lineColor, // Make left axis labels white
               },
             },
             // Configure second y-axis
@@ -84,6 +85,7 @@
                     },
                     ticks: {
                       display: true,
+                      color: secondaryLineColor, // Make right axis labels same color as the line
                     },
                   },
                 }

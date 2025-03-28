@@ -42,6 +42,10 @@ export class Location {
     this.cell = new Graphics()
     this.cell.eventMode = 'static'
     this.cell.cursor = 'pointer'
+    // Track entities in this location
+    this.moids = []
+    this.foxoids = []
+
     this.cell.onclick = () => {
       Location.appData.onClickCell(this.col, this.row)
     }
@@ -88,5 +92,29 @@ export class Location {
       nextRow = 0
     }
     return { nextCol, nextRow }
+  }
+
+  addEntity(entity) {
+    if (entity.constructor.name === 'Moid') {
+      this.moids.push(entity)
+    } else if (entity.constructor.name === 'Foxoid') {
+      this.foxoids.push(entity)
+    }
+  }
+
+  removeEntity(entity) {
+    if (entity.constructor.name === 'Moid') {
+      this.moids = this.moids.filter(m => m.id !== entity.id)
+    } else if (entity.constructor.name === 'Foxoid') {
+      this.foxoids = this.foxoids.filter(f => f.id !== entity.id)
+    }
+  }
+
+  getMoids(excludeId = null) {
+    return excludeId ? this.moids.filter(m => m.id !== excludeId) : [...this.moids]
+  }
+
+  getFoxoids(excludeId = null) {
+    return excludeId ? this.foxoids.filter(f => f.id !== excludeId) : [...this.foxoids]
   }
 }

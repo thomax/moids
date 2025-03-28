@@ -56,11 +56,7 @@ export class Oid {
   }
 
   die() {
-    if (this.sprite) {
-      this.sprite.removeFromParent()
-      this.sprite.destroy({ children: true, texture: false, baseTexture: false })
-      this.sprite = null
-    }
+    this.sprite.removeFromParent()
   }
 
   createOffspringWith(offspring, mate) {
