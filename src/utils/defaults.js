@@ -15,7 +15,7 @@ export const oidDefaults = {
     // genetic
     keepMovingThreshold: 25,
     energyGivenToOffspring: 0.3,
-    sufficientEnergyLevel: 0.8,
+    sufficientEnergyLevel: 0.4,
     mutationRate: 0.1,
     mutationImpact: 0.1
   },
@@ -28,7 +28,7 @@ export const oidDefaults = {
     // genetic
     keepMovingThreshold: 25,
     energyGivenToOffspring: 0.3,
-    sufficientEnergyLevel: 0.8,
+    sufficientEnergyLevel: 0.33,
     mutationRate: 0.1,
     mutationImpact: 0.1
   }

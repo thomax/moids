@@ -10,7 +10,9 @@
   export let foxoids = []
   export let livingMoidCounts = []
   export let livingFoxoidCounts = []
-  export let deadOidCount = 0
+  export let starvedMoidCount = 0
+  export let predatedMoidCount = 0
+  export let starvedFoxoidCount = 0
   export let onSelectedOid = () => {
     console.warn('onSelectedOid not set')
   }
@@ -80,38 +82,6 @@
       secondaryOptions={{ beginAtZero: true, position: 'right' }}
     />
   </div>
-  <div class="livingFoxoids">
-    <h2>
-      <span class="oid-header"
-        ><img src={foxoidImagePath} alt="Living foxoids" />
-        {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
-        <span class="sortInfo"
-          >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
-            .direction}</span
-        >
-      </span>
-    </h2>
-    <ul>
-      <li class="header">
-        <span on:click={handleSortClicked('name', 'livingFoxoids')}>Name</span>
-        <span on:click={handleSortClicked('generation', 'livingFoxoids')}>Gen</span>
-        <span on:click={handleSortClicked('offspringCount', 'livingFoxoids')}>Kids</span>
-        <span on:click={handleSortClicked('energy', 'livingFoxoids')}>Energy</span>
-      </li>
-      {#each foxoids as foxoid}
-        <li>
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <span on:click={onSelectedOid(foxoid.id)} class={foxoid.isSelected ? 'selected' : ''}
-            >{foxoid.name}</span
-          >
-          <span>{foxoid.generation}</span>
-          <span>{foxoid.offspringCount}</span>
-          <span>{Math.floor(foxoid.energy)}</span>
-        </li>
-      {/each}
-    </ul>
-  </div>
 
   <div class="livingMoids">
     <h2>
@@ -146,17 +116,60 @@
     </ul>
   </div>
 
-  <div class="deceasedOids">
+  <div class="livingFoxoids">
     <h2>
       <span class="oid-header"
-        ><img src={moidImagePath} alt="Dead moids" /><img
-          src={foxoidImagePath}
-          alt="Dead foxoids"
-        />
-        Deaths:
-        {deadOidCount}
+        ><img src={foxoidImagePath} alt="Living foxoids" />
+        {livingFoxoidCounts[livingFoxoidCounts.length - 1]}
+        <span class="sortInfo"
+          >{sortablesTranslate[sortSettings.livingFoxoids.key]},{sortSettings.livingFoxoids
+            .direction}</span
+        >
       </span>
     </h2>
+    <ul>
+      <li class="header">
+        <span on:click={handleSortClicked('name', 'livingFoxoids')}>Name</span>
+        <span on:click={handleSortClicked('generation', 'livingFoxoids')}>Gen</span>
+        <span on:click={handleSortClicked('offspringCount', 'livingFoxoids')}>Kids</span>
+        <span on:click={handleSortClicked('energy', 'livingFoxoids')}>Energy</span>
+      </li>
+      {#each foxoids as foxoid}
+        <li>
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <span on:click={onSelectedOid(foxoid.id)} class={foxoid.isSelected ? 'selected' : ''}
+            >{foxoid.name}</span
+          >
+          <span>{foxoid.generation}</span>
+          <span>{foxoid.offspringCount}</span>
+          <span>{Math.floor(foxoid.energy)}</span>
+        </li>
+      {/each}
+    </ul>
+  </div>
+
+  <div class="deceasedOids">
+    <h2>
+      <span class="oid-header">
+        Deaths:
+        {starvedMoidCount + predatedMoidCount + starvedFoxoidCount}
+      </span>
+    </h2>
+    <ul>
+      <li>
+        <span><img src={moidImagePath} alt="Starved moids" /> starved</span>
+        <span>{starvedMoidCount}</span>
+      </li>
+      <li>
+        <span><img src={moidImagePath} alt="Predated moids" /> eaten</span>
+        <span>{predatedMoidCount}</span>
+      </li>
+      <li>
+        <span><img src={foxoidImagePath} alt="Starved foxoids" /> starved</span>
+        <span>{starvedFoxoidCount}</span>
+      </li>
+    </ul>
   </div>
 </div>
 
@@ -266,7 +279,7 @@
   }
 
   .deceasedOids {
-    height: 5vh;
+    height: 9vh;
     overflow-y: auto;
     border: 1px solid gray;
     padding: 0px 3px 0px 3px;

@@ -33,7 +33,9 @@
   let foxoids = []
   let livingMoidCounts = []
   let livingFoxoidCounts = []
-  let deadOidCount = 0
+  let starvedMoidCount = 0
+  let predatedMoidCount = 0
+  let starvedFoxoidCount = 0
 
   async function initApp() {
     app = new Application()
@@ -128,6 +130,7 @@
       if (isDead) {
         if (!$isMuted) playSound('deathSound', appData)
         newlyDeceasedMoids.push(moid)
+        starvedMoidCount++
         return
       }
       const currentLocation = locations[moid.col][moid.row]
@@ -136,16 +139,14 @@
         const grassConsumed = moid.eat(currentLocation.grass)
         currentLocation.reduceGrass(grassConsumed)
       } else {
-        if (moid.hasSufficientEnergy() && moid.findOtherOidsPresent(moids)[0]) {
-          const mate = moid.findOtherOidsPresent(moids)[0]
+        const mate = moid.findOtherOidsPresent(moids, { isMateable: true })[0]
+        if (moid.hasSufficientEnergy() && mate) {
           // If moid has energy and mate in same cell, reproduce
-          if (mate) {
-            let offspring = new Moid(moid.col, moid.row)
-            offspring = moid.createOffspringWith(offspring, mate)
-            moids.push(offspring)
-            if (!$isMuted) playSound('spawnSound', appData)
-            createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-          }
+          let offspring = new Moid(moid.col, moid.row)
+          offspring = moid.createOffspringWith(offspring, mate)
+          moids.push(offspring)
+          if (!$isMuted) playSound('spawnSound', appData)
+          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
         } else {
           // With nothing else to do, move to a random adjacent location
           const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
@@ -154,7 +155,6 @@
       }
     })
     moids = moids.filter((m) => !newlyDeceasedMoids.includes(m))
-    deadOidCount += newlyDeceasedMoids.length
     livingMoidCounts.push(moids.length)
     livingMoidCounts = [...livingMoidCounts]
   }
@@ -166,6 +166,7 @@
       if (isDead) {
         if (!$isMuted) playSound('deathSound', appData)
         newlyDeceasedFoxoids.push(foxoid)
+        starvedFoxoidCount++
         return
       }
       const currentLocation = locations[foxoid.col][foxoid.row]
@@ -176,18 +177,16 @@
         const energyConsumed = foxoid.eat(prey.energy)
         prey.die()
         moids = moids.filter((m) => m.id !== prey.id)
-        deadOidCount++
+        predatedMoidCount++
       } else {
-        if (foxoid.hasSufficientEnergy() && foxoid.findOtherOidsPresent(foxoids)[0]) {
-          const mate = foxoid.findOtherOidsPresent(foxoids)[0]
+        const mate = foxoid.findOtherOidsPresent(foxoids, { isMateable: true })[0]
+        if (foxoid.hasSufficientEnergy() && mate) {
           // If foxoid has energy and mate available, reproduce
-          if (mate) {
-            let offspring = new Foxoid(foxoid.col, foxoid.row)
-            offspring = foxoid.createOffspringWith(offspring, mate)
-            foxoids.push(offspring)
-            if (!$isMuted) playSound('spawnSound', appData)
-            createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-          }
+          let offspring = new Foxoid(foxoid.col, foxoid.row)
+          offspring = foxoid.createOffspringWith(offspring, mate)
+          foxoids.push(offspring)
+          if (!$isMuted) playSound('spawnSound', appData)
+          createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
         } else {
           // With nothing else to do, move to a random adjacent location
           const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
@@ -196,7 +195,6 @@
       }
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
-    deadOidCount += newlyDeceasedFoxoids.length
     livingFoxoidCounts.push(foxoids.length)
   }
 
@@ -210,8 +208,8 @@
     }
   }
 
-  function handleSelectedOid(oidId) {
-    ;[moids, foxoids].flat().forEach((oid) => {
+  function handleToggleSelectedOid(oidId) {
+    new Array([...moids, ...foxoids]).forEach((oid) => {
       if (oid.id === oidId) {
         oid.toggleSelected()
       } else {
@@ -251,8 +249,10 @@
     {foxoids}
     {livingMoidCounts}
     {livingFoxoidCounts}
-    {deadOidCount}
-    onSelectedOid={handleSelectedOid}
+    {starvedMoidCount}
+    {predatedMoidCount}
+    {starvedFoxoidCount}
+    onSelectedOid={handleToggleSelectedOid}
   />
   <ExpandedStats {moids} {foxoids} />
 </div>

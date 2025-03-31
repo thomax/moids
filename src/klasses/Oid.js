@@ -141,10 +141,14 @@ export class Oid {
   }
 
   // array of oids in cell, sorted by energy
-  findOtherOidsPresent(oids) {
+  // If purpose is mating, filter out oids lacking in energy
+  // Both mates and prey are favored by current energy
+  findOtherOidsPresent(oids, options = {}) {
     const { col, row, id } = this
+    const { isMateable = false } = options
     return oids
       .filter(oid => oid.col === col && oid.row === row && oid.id !== id)
+      .filter(oid => isMateable ? oid.hasSufficientEnergy() : true)
       .sort((a, b) => b.energy - a.energy)
   }
 

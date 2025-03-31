@@ -17,21 +17,21 @@
   // Local copy of settings that we'll edit
   let settings = { ...$simulationSettings }
 
-  function toggleMode() {
+  function handleToggleMode() {
     $settingsPanelMode = $settingsPanelMode === 'settings' ? 'help' : 'settings'
   }
 
-  function closePanel() {
+  function handleClosePanel() {
     $showSettingsPanel = false
   }
 
-  function resetToDefaults() {
+  function handleResetSettings() {
     if (confirm('Are you sure you want to reset all settings to default values?')) {
       settings = structuredClone(oidDefaults)
     }
   }
 
-  function saveAndRestart() {
+  function handleSaveAndRestart() {
     // Update the store with new settings
     $simulationSettings = { ...settings }
 
@@ -42,16 +42,33 @@
     $showSettingsPanel = false
     window.location.reload()
   }
+
+  // Handle keyboard events (ESC key)
+  function handleKeydown(event) {
+    if (event.key === 'Escape') {
+      handleClosePanel()
+    }
+  }
+
+  onMount(() => {
+    // Add event listener when component mounts
+    window.addEventListener('keydown', handleKeydown)
+
+    // Clean up when component is destroyed
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  })
 </script>
 
 <div class="settings-panel">
   <div class="settings-header">
     <h2>{$settingsPanelMode === 'settings' ? 'Simulation Settings' : 'Help'}</h2>
     <div class="header-buttons">
-      <button on:click={toggleMode}>
+      <button on:click={handleToggleMode}>
         {$settingsPanelMode === 'settings' ? 'Show Help' : 'Show Settings'}
       </button>
-      <button on:click={closePanel} class="close-button">✕</button>
+      <button on:click={handleClosePanel} class="close-button">✕</button>
     </div>
   </div>
 
@@ -315,12 +332,16 @@
   <div class="settings-footer">
     {#if $settingsPanelMode === 'settings'}
       <div class="settings-actions">
-        <button on:click={saveAndRestart} class="primary-button">Save & Restart Simulation</button>
-        <button on:click={resetToDefaults} class="reset-button">Reset to default settings</button>
-        <button on:click={closePanel}>Cancel</button>
+        <button on:click={handleSaveAndRestart} class="primary-button"
+          >Save & Restart Simulation</button
+        >
+        <button on:click={handleResetSettings} class="reset-button"
+          >Reset to default settings</button
+        >
+        <button on:click={handleClosePanel}>Cancel</button>
       </div>
     {:else}
-      <button on:click={closePanel}>Close</button>
+      <button on:click={handleClosePanel}>Close</button>
     {/if}
   </div>
 </div>

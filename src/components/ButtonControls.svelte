@@ -21,7 +21,7 @@
 
   // Define the options and set a default selection
   const options = ['Grass', 'Moid', 'Foxoid']
-  let selectedOption = options[1]
+  let selectedOption = options[0]
 
   function selectDeploymentOption(option) {
     selectedOption = option
@@ -46,7 +46,7 @@
   })
 </script>
 
-<div class="buttons-container">
+<div class="buttons-container" title="What do you want to deploy?">
   {#each options as option, i}
     <button
       class:active={selectedOption === option}
@@ -54,6 +54,7 @@
       class:middle={i === 1}
       class:last={i === 2}
       onclick={() => selectDeploymentOption(option)}
+      title="Deploy {option}"
     >
       {option}
     </button>
@@ -73,9 +74,9 @@
     <button class="settings-button" onclick={() => handleMuteToggle()}>
       <div class="icon-wrapper">
         {#if $isMuted}
-          <MdVolumeOff />
-        {:else}
           <MdVolumeUp />
+        {:else}
+          <MdVolumeOff />
         {/if}
       </div>
     </button>
