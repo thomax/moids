@@ -153,8 +153,7 @@ export class Oid {
   }
 
   willEat(availableFood) {
-    const hasLocationSufficientFood = availableFood > this.keepMovingThreshold
-    return hasLocationSufficientFood && !this.hasSufficientEnergy()
+    return availableFood > this.keepMovingThreshold
   }
 
   hasSufficientEnergy() {

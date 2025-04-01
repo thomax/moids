@@ -133,26 +133,32 @@
         starvedMoidCount++
         return
       }
-      const currentLocation = locations[moid.col][moid.row]
-      if (moid.willEat(currentLocation.grass)) {
-        // If moid needs energy, eat
-        const grassConsumed = moid.eat(currentLocation.grass)
-        currentLocation.reduceGrass(grassConsumed)
-      } else {
+
+      // If moid has energy, try to reproduce
+      if (moid.hasSufficientEnergy()) {
         const mate = moid.findOtherOidsPresent(moids, { isMateable: true })[0]
-        if (moid.hasSufficientEnergy() && mate) {
-          // If moid has energy and mate in same cell, reproduce
+        if (mate) {
           let offspring = new Moid(moid.col, moid.row)
           offspring = moid.createOffspringWith(offspring, mate)
           moids.push(offspring)
           if (!$isMuted) playSound('spawnSound', appData)
           createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-        } else {
-          // With nothing else to do, move to a random adjacent location
-          const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
-          moid.moveTo(nextCol, nextRow)
+          return
         }
       }
+
+      const currentLocation = locations[moid.col][moid.row]
+
+      // If peckish and location offers food, eat
+      if (moid.willEat(currentLocation.grass)) {
+        const grassConsumed = moid.eat(currentLocation.grass)
+        currentLocation.reduceGrass(grassConsumed)
+        return
+      }
+
+      // With nothing else to do, move to a random adjacent location
+      const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+      moid.moveTo(nextCol, nextRow)
     })
     moids = moids.filter((m) => !newlyDeceasedMoids.includes(m))
     livingMoidCounts.push(moids.length)
@@ -169,30 +175,34 @@
         starvedFoxoidCount++
         return
       }
-      const currentLocation = locations[foxoid.col][foxoid.row]
-      const prey = foxoid.findOtherOidsPresent(moids)[0]
 
-      if (prey && foxoid.willEat(prey.energy)) {
-        // If foxoid needs energy, eat
-        const energyConsumed = foxoid.eat(prey.energy)
-        prey.die()
-        moids = moids.filter((m) => m.id !== prey.id)
-        predatedMoidCount++
-      } else {
+      // If foxoid has enough energy, try to reproduce
+      if (foxoid.hasSufficientEnergy()) {
         const mate = foxoid.findOtherOidsPresent(foxoids, { isMateable: true })[0]
-        if (foxoid.hasSufficientEnergy() && mate) {
-          // If foxoid has energy and mate available, reproduce
+        if (mate) {
           let offspring = new Foxoid(foxoid.col, foxoid.row)
           offspring = foxoid.createOffspringWith(offspring, mate)
           foxoids.push(offspring)
           if (!$isMuted) playSound('spawnSound', appData)
           createSpawnEffect(offspring.sprite.x, offspring.sprite.y, appData)
-        } else {
-          // With nothing else to do, move to a random adjacent location
-          const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
-          foxoid.moveTo(nextCol, nextRow)
+          return
         }
       }
+
+      // If foxoid feels peckish, eat a moid if present
+      const prey = foxoid.findOtherOidsPresent(moids)[0]
+      if (prey && foxoid.willEat(prey.energy)) {
+        const energyConsumed = foxoid.eat(prey.energy)
+        prey.die()
+        moids = moids.filter((m) => m.id !== prey.id)
+        predatedMoidCount++
+        return
+      }
+
+      // Move to a random adjacent location
+      const currentLocation = locations[foxoid.col][foxoid.row]
+      const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
+      foxoid.moveTo(nextCol, nextRow)
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
     livingFoxoidCounts.push(foxoids.length)
@@ -209,7 +219,7 @@
   }
 
   function handleToggleSelectedOid(oidId) {
-    new Array([...moids, ...foxoids]).forEach((oid) => {
+    ;[moids, foxoids].flat().forEach((oid) => {
       if (oid.id === oidId) {
         oid.toggleSelected()
       } else {

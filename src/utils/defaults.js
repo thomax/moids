@@ -1,6 +1,6 @@
 export const oidDefaults = {
-  initialMoidCount: 30,
-  xCellCount: 30,
+  initialMoidCount: 2,
+  xCellCount: 15,
   maxFPS: 1,
   location: {
     grassRegrowthRate: 0.5,
@@ -8,7 +8,7 @@ export const oidDefaults = {
   },
   moid: {
     energy: 300,
-    size: 400,
+    size: 500,
     metabolicRate: 3,
     feedingEfficiency: 0.2,
     foodEnergyConversion: 0.4,
@@ -28,7 +28,7 @@ export const oidDefaults = {
     // genetic
     keepMovingThreshold: 25,
     energyGivenToOffspring: 0.3,
-    sufficientEnergyLevel: 0.33,
+    sufficientEnergyLevel: 0.2,
     mutationRate: 0.1,
     mutationImpact: 0.1
   }

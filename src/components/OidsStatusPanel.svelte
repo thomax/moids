@@ -5,6 +5,7 @@
   import DualLineChart from './DualLineChart.svelte'
   import moidImagePath from '../assets/moid.png'
   import foxoidImagePath from '../assets/foxoid.png'
+  import { on } from 'svelte/events'
 
   export let moids = []
   export let foxoids = []
@@ -13,9 +14,7 @@
   export let starvedMoidCount = 0
   export let predatedMoidCount = 0
   export let starvedFoxoidCount = 0
-  export let onSelectedOid = () => {
-    console.warn('onSelectedOid not set')
-  }
+  export let onSelectedOid
 
   const sortablesTranslate = {
     name: 'name',
@@ -45,6 +44,10 @@
       }
       return 0
     })
+  }
+
+  function handleToggleOidSelection(oidId) {
+    onSelectedOid(oidId)
   }
 
   function handleSortClicked(sortKey, arrayName) {
@@ -105,8 +108,9 @@
         <li>
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <span on:click={onSelectedOid(moid.id)} class={moid.isSelected ? 'selected' : ''}
-            >{moid.name}</span
+          <span
+            on:click={() => handleToggleOidSelection(moid.id)}
+            class={moid.isSelected ? 'selected' : ''}>{moid.name}</span
           >
           <span>{moid.generation}</span>
           <span>{moid.offspringCount}</span>
@@ -138,8 +142,9 @@
         <li>
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <span on:click={onSelectedOid(foxoid.id)} class={foxoid.isSelected ? 'selected' : ''}
-            >{foxoid.name}</span
+          <span
+            on:click={() => handleToggleOidSelection(foxoid.id)}
+            class={foxoid.isSelected ? 'selected' : ''}>{foxoid.name}</span
           >
           <span>{foxoid.generation}</span>
           <span>{foxoid.offspringCount}</span>
