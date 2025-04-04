@@ -471,11 +471,10 @@
 
   .whoDunnIt {
     position: absolute;
-    bottom: 70px;
-    right: 20px;
+    bottom: 80px;
+    right: 50px;
     font-size: 1rem;
     color: #888;
-    text-align: right;
   }
 
   .whoDunnIt a {
