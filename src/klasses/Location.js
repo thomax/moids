@@ -7,6 +7,7 @@ import { simulationSettings } from '../stores/globalStore.js'
 
 export class Location {
 
+  static all = [] // 2D array of locations
   // Initialize with default values from the store
   static maxGrass = get(simulationSettings).location.maxGrass
   static grassRegrowthRate = get(simulationSettings).location.grassRegrowthRate
@@ -43,8 +44,8 @@ export class Location {
     this.cell.eventMode = 'static'
     this.cell.cursor = 'pointer'
     // Track entities in this location
-    this.moids = []
-    this.foxoids = []
+    this.moids = {}
+    this.foxoids = {}
 
     this.cell.onclick = () => {
       Location.appData.onClickCell(this.col, this.row)
@@ -94,27 +95,29 @@ export class Location {
     return { nextCol, nextRow }
   }
 
-  addEntity(entity) {
-    if (entity.constructor.name === 'Moid') {
-      this.moids.push(entity)
-    } else if (entity.constructor.name === 'Foxoid') {
-      this.foxoids.push(entity)
+  addOid(oid) {
+    if (oid.constructor.name === 'Moid') {
+      this.moids[oid.id] = oid
+    } else if (oid.constructor.name === 'Foxoid') {
+      this.foxoids[oid.id] = oid
     }
   }
 
-  removeEntity(entity) {
-    if (entity.constructor.name === 'Moid') {
-      this.moids = this.moids.filter(m => m.id !== entity.id)
-    } else if (entity.constructor.name === 'Foxoid') {
-      this.foxoids = this.foxoids.filter(f => f.id !== entity.id)
+  removeOid(oid) {
+    if (oid.constructor.name === 'Moid') {
+      delete this.moids[oid.id]
+    } else if (oid.constructor.name === 'Foxoid') {
+      delete this.foxoids[oid.id]
     }
   }
 
   getMoids(excludeId = null) {
-    return excludeId ? this.moids.filter(m => m.id !== excludeId) : [...this.moids]
+    const values = Object.values(this.moids)
+    return excludeId ? values.filter(m => m.id !== excludeId) : values
   }
 
   getFoxoids(excludeId = null) {
-    return excludeId ? this.foxoids.filter(f => f.id !== excludeId) : [...this.foxoids]
+    const values = Object.values(this.foxoids)
+    return excludeId ? values.filter(m => m.id !== excludeId) : values
   }
 }

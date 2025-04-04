@@ -2,6 +2,7 @@
 import { allRandom } from 'human-names'
 import { Sprite } from 'pixi.js'
 import { gsap } from 'gsap'
+import { Location } from './Location.js'
 import { round } from '../utils/functions.js'
 
 export class Oid {
@@ -27,6 +28,7 @@ export class Oid {
     // UI thingy
     this.isSelected = false
     this.assignSprite(texture)
+    Location.all[this.col][this.row].addOid(this)
   }
 
   getMaxEnergy() {
@@ -57,6 +59,7 @@ export class Oid {
 
   die() {
     this.sprite.removeFromParent()
+    Location.all[this.col][this.row].removeOid(this)
   }
 
   createOffspringWith(offspring, mate) {
@@ -132,24 +135,27 @@ export class Oid {
       y: finalY,
       duration: (isWrappingX || isWrappingY) ? Oid.animationDuration / 2 : Oid.animationDuration,
     })
+    Location.all[this.col][this.row].removeOid(this)
     this.col = newCol
     this.row = newRow
+    Location.all[this.col][this.row].addOid(this)
   }
 
   toggleSelected() {
     this.isSelected = !this.isSelected
   }
 
-  // array of oids in cell, sorted by energy
-  // If purpose is mating, filter out oids lacking in energy
-  // Both mates and prey are favored by current energy
-  findOtherOidsPresent(oids, options = {}) {
-    const { col, row, id } = this
-    const { isMateable = false } = options
-    return oids
-      .filter(oid => oid.col === col && oid.row === row && oid.id !== id)
-      .filter(oid => isMateable ? oid.hasSufficientEnergy() : true)
-      .sort((a, b) => b.energy - a.energy)
+  findMate() {
+    const location = Location.all[this.col][this.row]
+    const oids = this.constructor.name === 'Moid' ? location.getMoids(this.id) : location.getFoxoids(this.id)
+    if (!oids.length) return null
+    let bestMate = oids[0]
+    for (let i = 1; i < oids.length; i++) {
+      if (oids[i].energy > bestMate.energy) {
+        bestMate = oids[i]
+      }
+    }
+    return bestMate.hasSufficientEnergy() ? bestMate : null
   }
 
   willEat(availableFood) {

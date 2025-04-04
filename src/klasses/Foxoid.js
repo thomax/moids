@@ -3,6 +3,7 @@ import { get } from 'svelte/store'
 import { Assets } from 'pixi.js'
 import foxoidImagePath from '../assets/foxoid.png'
 import { Oid } from './Oid.js'
+import { Location } from './Location.js'
 import { simulationSettings } from '../stores/globalStore.js'
 
 export class Foxoid extends Oid {
@@ -47,5 +48,17 @@ export class Foxoid extends Oid {
 
   updateSprite() {
     this.sprite.tint = this.isSelected ? Foxoid.selectedTintColor : 0xffffff
+  }
+
+  findPrey() {
+    const moids = Location.all[this.col][this.row].getMoids()
+    if (moids.length <= 1) return moids[0]
+    let bestPrey = moids[0]
+    for (let i = 1; i < moids.length; i++) {
+      if (moids[i].energy > bestPrey.energy) {
+        bestPrey = moids[i]
+      }
+    }
+    return bestPrey
   }
 }

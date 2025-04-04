@@ -262,7 +262,7 @@
   }
 
   .livingFoxoids {
-    height: 35vh;
+    height: 28vh;
     overflow-y: auto;
     border: 1px solid gray;
     margin-bottom: 7px;
@@ -273,7 +273,7 @@
   }
 
   .livingMoids {
-    height: 35vh;
+    height: 28vh;
     overflow-y: auto;
     border: 1px solid gray;
     margin-bottom: 7px;
@@ -284,7 +284,7 @@
   }
 
   .deceasedOids {
-    height: 9vh;
+    height: 14vh;
     overflow-y: auto;
     border: 1px solid gray;
     padding: 0px 3px 0px 3px;

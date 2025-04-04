@@ -28,7 +28,6 @@
   let app
   const appData = {}
 
-  const locations = []
   let moids = []
   let foxoids = []
   let livingMoidCounts = []
@@ -83,7 +82,7 @@
         oid = new Foxoid(col, row)
         foxoids.push(oid)
       } else if ($selectedDeploymentType === 'Grass') {
-        const location = locations[col][row]
+        const location = Location.all[col][row]
         location.grass = Location.maxGrass
         location.updateCell()
         return
@@ -98,14 +97,14 @@
     Location.setAppData(appData)
   }
 
-  function initLocations(appData, locations) {
+  function initLocations(appData) {
     const { width, height, colCount, rowCount, cellSize } = appData
     for (let col = 0; col < colCount; col += 1) {
       for (let row = 0; row < rowCount; row += 1) {
-        if (locations[col] === undefined) {
-          locations[col] = []
+        if (Location.all[col] === undefined) {
+          Location.all[col] = []
         }
-        locations[col][row] = new Location(col, row, cellSize)
+        Location.all[col][row] = new Location(col, row, cellSize)
       }
     }
   }
@@ -113,7 +112,7 @@
   async function initMoids(appData) {
     const { width, height, colCount, rowCount, cellSize } = appData
     for (let i = 0; i < initialMoidCount; i++) {
-      // find random location from locations array
+      // find random location
       const randomCol = Math.floor(Math.random() * colCount)
       const randomRow = Math.floor(Math.random() * rowCount)
       // Draw moid sprite at this location
@@ -136,7 +135,7 @@
 
       // If moid has energy, try to reproduce
       if (moid.hasSufficientEnergy()) {
-        const mate = moid.findOtherOidsPresent(moids, { isMateable: true })[0]
+        const mate = moid.findMate()
         if (mate) {
           let offspring = new Moid(moid.col, moid.row)
           offspring = moid.createOffspringWith(offspring, mate)
@@ -147,7 +146,7 @@
         }
       }
 
-      const currentLocation = locations[moid.col][moid.row]
+      const currentLocation = Location.all[moid.col][moid.row]
 
       // If peckish and location offers food, eat
       if (moid.willEat(currentLocation.grass)) {
@@ -178,7 +177,7 @@
 
       // If foxoid has enough energy, try to reproduce
       if (foxoid.hasSufficientEnergy()) {
-        const mate = foxoid.findOtherOidsPresent(foxoids, { isMateable: true })[0]
+        const mate = foxoid.findMate()
         if (mate) {
           let offspring = new Foxoid(foxoid.col, foxoid.row)
           offspring = foxoid.createOffspringWith(offspring, mate)
@@ -190,7 +189,7 @@
       }
 
       // If foxoid feels peckish, eat a moid if present
-      const prey = foxoid.findOtherOidsPresent(moids)[0]
+      const prey = foxoid.findPrey()
       if (prey && foxoid.willEat(prey.energy)) {
         const energyConsumed = foxoid.eat(prey.energy)
         prey.die()
@@ -200,7 +199,7 @@
       }
 
       // Move to a random adjacent location
-      const currentLocation = locations[foxoid.col][foxoid.row]
+      const currentLocation = Location.all[foxoid.col][foxoid.row]
       const { nextCol, nextRow } = currentLocation.randomAdjacentCoordinates()
       foxoid.moveTo(nextCol, nextRow)
     })
@@ -212,7 +211,7 @@
     const { colCount, rowCount } = appData
     for (let col = 0; col < colCount; col += 1) {
       for (let row = 0; row < rowCount; row += 1) {
-        const loc = locations[col][row]
+        const loc = Location.all[col][row]
         loc.growGrass()
       }
     }
@@ -239,7 +238,7 @@
   onMount(async () => {
     await initApp()
     Location.updateFromSettings()
-    initLocations(appData, locations)
+    initLocations(appData)
     // Create moids
     await initMoids(appData)
     app.ticker.maxFPS = $simulationSettings.maxFPS
