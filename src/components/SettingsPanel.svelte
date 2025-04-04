@@ -32,6 +32,16 @@
   }
 
   function handleSaveAndRestart() {
+    let message = ''
+    if (settings.initialMoidCount > 1000) {
+      alert("Initial number of Moids can't exceed 1000. Setting to 1000.")
+      settings.initialMoidCount = 1000
+    }
+    if (settings.xCellCount > 200) {
+      alert("Number of cells per row can't exceed 200. Setting to 200.")
+      settings.xCellCount = 200
+    }
+
     // Update the store with new settings
     $simulationSettings = { ...settings }
 
