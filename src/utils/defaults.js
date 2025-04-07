@@ -35,6 +35,9 @@ export const oidDefaults = {
 }
 
 export const VERSION = {
-  buildTime: new Date().toISOString(),
-  buildId: import.meta.env.VERCEL_URL || 'local'
+  // Format: YYYY-MM-DD-HH-MM
+  buildTime: process.env.VITE_BUILD_TIME || new Date().toISOString(),
+  buildId: process.env.VERCEL_GIT_COMMIT_SHA
+    ? process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7)
+    : 'local'
 }

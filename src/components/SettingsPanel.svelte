@@ -339,10 +339,7 @@
       Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚
       and ☕️
       <div class="version-info">
-        Build: {formattedBuildTime}
-        {#if VERSION.buildId !== 'local'}
-          [{VERSION.buildId}]
-        {/if}
+        {formattedBuildTime}
       </div>
     </div>
   {/if}
