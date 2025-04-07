@@ -460,7 +460,7 @@
   }
 
   .reset-button {
-    background-color: #541414;
+    background-color: #ac1e1e;
     border-color: #6b1a1a;
     color: #eee;
   }
