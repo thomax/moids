@@ -33,3 +33,8 @@ export const oidDefaults = {
     mutationImpact: 0.1
   }
 }
+
+export const VERSION = {
+  buildTime: new Date().toISOString(),
+  buildId: import.meta.env.VERCEL_URL || 'local'
+}

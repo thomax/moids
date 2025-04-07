@@ -12,7 +12,9 @@
   import locationImagePath from '../assets/location.png'
   import moidImagePath from '../assets/moid.png'
   import foxoidImagePath from '../assets/foxoid.png'
-  import { oidDefaults } from '../utils/defaults.js'
+  import { oidDefaults, VERSION } from '../utils/defaults.js'
+
+  const formattedBuildTime = new Date(VERSION.buildTime).toLocaleString('nb-NO')
 
   // Local copy of settings that we'll edit
   let settings = { ...$simulationSettings }
@@ -334,8 +336,14 @@
 
   {#if $settingsPanelMode === 'help'}
     <div class="whoDunnIt">
-      Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚 and
-      ☕️
+      Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚
+      and ☕️
+      <div class="version-info">
+        Build: {formattedBuildTime}
+        {#if VERSION.buildId !== 'local'}
+          [{VERSION.buildId}]
+        {/if}
+      </div>
     </div>
   {/if}
 
@@ -485,6 +493,12 @@
   .whoDunnIt a:hover {
     text-decoration: underline;
     color: #aaa;
+  }
+
+  .version-info {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
   }
 
   button {
