@@ -16,6 +16,7 @@ export class Moid extends Oid {
   constructor(col, row) {
     super(col, row, Moid.texture)
     const { cellSize } = Oid.appData
+    this.species = 'Moid'
 
     // Get settings from the store
     const moidSettings = get(simulationSettings).moid

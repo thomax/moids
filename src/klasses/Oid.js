@@ -152,7 +152,7 @@ export class Oid {
       return null
     }
     let oids
-    if (this.constructor.name === 'Moid') {
+    if (this.species === 'Moid') {
       oids = location.getMoids(this.id)
       console.log(this.name, 'the Moid is looking for a mate', oids.length)
     } else {

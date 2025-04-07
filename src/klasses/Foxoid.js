@@ -16,6 +16,7 @@ export class Foxoid extends Oid {
 
   constructor(col, row) {
     super(col, row, Foxoid.texture)
+    this.species = 'Foxoid'
 
     // Get settings from the store
     const foxoidSettings = get(simulationSettings).foxoid

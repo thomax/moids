@@ -96,17 +96,17 @@ export class Location {
   }
 
   addOid(oid) {
-    if (oid.constructor.name === 'Moid') {
+    if (oid.species === 'Moid') {
       this.moids[oid.id] = oid
-    } else if (oid.constructor.name === 'Foxoid') {
+    } else if (oid.species === 'Foxoid') {
       this.foxoids[oid.id] = oid
     }
   }
 
   removeOid(oid) {
-    if (oid.constructor.name === 'Moid') {
+    if (oid.species === 'Moid') {
       delete this.moids[oid.id]
-    } else if (oid.constructor.name === 'Foxoid') {
+    } else if (oid.species === 'Foxoid') {
       delete this.foxoids[oid.id]
     }
   }
