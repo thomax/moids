@@ -147,38 +147,18 @@ export class Oid {
 
   findMate() {
     const location = Location.all[this.col][this.row]
-    if (!location) {
-      console.error('Location not found')
-      return null
-    }
-    let oids
-    if (this.species === 'Moid') {
-      oids = location.getMoids(this.id)
-      console.log(this.name, 'the Moid is looking for a mate', oids.length)
-    } else {
-      oids = location.getFoxoids(this.id)
-      console.log(this.name, 'is looking for a mate', oids.length)
-    }
-    if (!oids.length) {
-      console.log(this.name, 'found no mates')
-      return null
-    }
+    if (!location) return null
+
+    const oids = this.species === 'Moid' ? location.getMoids(this.id) : location.getFoxoids(this.id)
+
+    if (!oids.length) return null
     let bestMate = oids[0]
     for (let i = 1; i < oids.length; i++) {
       if (oids[i].energy > bestMate.energy) {
         bestMate = oids[i]
       }
     }
-    console.log(this.name, 'found a mate!!', bestMate.name)
-    // Check if the mate has sufficient energy
-    if (bestMate.hasSufficientEnergy()) {
-      console.warn('...with sufficient energy!')
-      return bestMate
-    } else {
-      console.log('...NOT :(')
-      return null
-    }
-    //    return bestMate.hasSufficientEnergy() ? bestMate : null
+    return bestMate.hasSufficientEnergy() ? bestMate : null
   }
 
   willEat(availableFood) {
