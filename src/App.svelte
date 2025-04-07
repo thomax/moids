@@ -137,6 +137,7 @@
       if (moid.hasSufficientEnergy()) {
         const mate = moid.findMate()
         if (mate) {
+          console.log(moid.name, 'found', mate.name)
           let offspring = new Moid(moid.col, moid.row)
           offspring = moid.createOffspringWith(offspring, mate)
           moids.push(offspring)
