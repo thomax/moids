@@ -21,5 +21,5 @@ Appen kjører i nettleseren, er godkjent for bruk i Osloskolen og krever ikke in
 
 - Selve appen: https://moids.vercel.app/
 - PowerPoint: https://udeoslokommuneno-my.sharepoint.com/:p:/g/personal/thdra003_osloskolen_no/EeIIqxGqOBFJiD9Yc5GL2ywB7ooe3j1hBolc84bMUMCDqA?e=w9WV1b
-- Oppgaveark: https://udeoslokommuneno-my.sharepoint.com/:o:/g/personal/thdra003_osloskolen_no/EmcXTLAYB99LhhDf8LYpksUBvLceCpt8r_J_n93YhOlIbw?e=l8GUWV
+- Oppgaveark: https://udeoslokommuneno-my.sharepoint.com/:b:/g/personal/thdra003_osloskolen_no/Edkr0VzrjYdKvUeHXfZEN78BhQ_eCYKCU_48uj-G08zLxw?e=vYJY20
 - Kildekoden: https://github.com/thomax/moids (hvis man vil utfordre en IT1- eller IT2-gruppe med å lese, forstå og gjøre endringer i kode)
