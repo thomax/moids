@@ -40,3 +40,7 @@ Each moid and foxoid have the following genetic attributes. The initial value of
 - `sufficientEnergyLevel` - Used to calculate minimum energy required to reproduce. E.g. a moid with size 500 and sufficientEnergyLevel 0.2 will only reproduce if current energy is > 100.
 - `mutationRate` - When passing on attributes to offspring, what's the chance of a mutation occurring? mutationRate of 0.1 = 10% chance.
 - `mutationImpact` - When a mutation occurs, how much does the attribute change? mutationImpact of 0.1 will cause a mutation of +/-10%.
+
+# TODO
+- Mouseover info on attributes, explaining what the various vars mean
+- Deploy select could change the mouse pointer, giving a clear indication of what you're currently able to deploy
