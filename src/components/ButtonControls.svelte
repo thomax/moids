@@ -144,12 +144,12 @@
 
   button {
     font-family: Arial, Helvetica, sans-serif;
-    color: green;
+    color: rgb(55, 255, 55);
     padding: 4px 6px;
     background-color: black;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1px solid green;
+    border: 1px solid rgb(55, 255, 55);
     border-radius: 0;
     margin-right: -1px; /* Prevent double borders */
   }
@@ -164,7 +164,7 @@
   }
 
   button.active {
-    background-color: green;
+    background-color: rgb(173, 206, 173);
     color: black;
     position: relative; /* Ensure active button's border appears on top */
     z-index: 1;

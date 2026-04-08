@@ -88,13 +88,12 @@
 
   <div class="livingMoids">
     <h2>
-      <span class="oid-header"
-        ><img src={moidImagePath} alt="Living moids" />
+      <span class="oid-header">
+        <img src={moidImagePath} alt="Living moids" />
         {livingMoidCounts[livingMoidCounts.length - 1]}
-        <span class="sortInfo"
-          >{sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids
-            .direction}</span
-        >
+        <span class="sortInfo">
+          {sortablesTranslate[sortSettings.livingMoids.key]},{sortSettings.livingMoids.direction}
+        </span>
       </span>
     </h2>
     <ul>
