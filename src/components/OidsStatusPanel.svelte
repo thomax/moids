@@ -15,6 +15,7 @@
   export let predatedMoidCount = 0
   export let starvedFoxoidCount = 0
   export let onSelectedOid
+  export let tickCount = 0
 
   const sortablesTranslate = {
     name: 'name',
@@ -175,12 +176,20 @@
       </li>
     </ul>
   </div>
+  <div class="tick-count">{tickCount}</div>
 </div>
 
 <style>
   .panels-container {
     font-family: 'Courier New', Courier, monospace;
     padding: 0px 4px;
+  }
+
+  .tick-count {
+    color: white;
+    font-size: 0.8rem;
+    text-align: right;
+    padding-right: 5px;
   }
 
   .oid-header {

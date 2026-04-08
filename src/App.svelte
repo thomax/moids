@@ -25,6 +25,7 @@
   $: xCellCount = $simulationSettings.xCellCount
 
   let oidFieldContainer
+  let oidFieldWidth = Math.round(window.innerWidth * 0.7)
   let app
   const appData = {}
 
@@ -35,6 +36,7 @@
   let starvedMoidCount = 0
   let predatedMoidCount = 0
   let starvedFoxoidCount = 0
+  let tickCount = 0
 
   async function initApp() {
     app = new Application()
@@ -232,6 +234,7 @@
       updateFoxoids()
       updateMoids()
       updateLocations()
+      tickCount++
     }
   }
 
@@ -252,10 +255,11 @@
 </script>
 
 <div id="container">
-  <div bind:this={oidFieldContainer} id="moid-field"></div>
+  <div bind:this={oidFieldContainer} id="moid-field" style="width: {oidFieldWidth}px"></div>
   <OidsStatusPanel
     {moids}
     {foxoids}
+    {tickCount}
     {livingMoidCounts}
     {livingFoxoidCounts}
     {starvedMoidCount}
@@ -281,7 +285,7 @@
   }
 
   #moid-field {
-    width: 70vw;
+    flex-shrink: 0;
     height: 100vh;
     padding: 0;
     margin: 0;
