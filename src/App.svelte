@@ -207,6 +207,7 @@
     })
     foxoids = foxoids.filter((f) => !newlyDeceasedFoxoids.includes(f))
     livingFoxoidCounts.push(foxoids.length)
+    livingFoxoidCounts = [...livingFoxoidCounts]
   }
 
   function updateLocations() {

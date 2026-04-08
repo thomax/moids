@@ -17,6 +17,9 @@
   export let onSelectedOid
   export let tickCount = 0
 
+  const recentTicksToShow = 2000
+  let onlyRenderRecentTicks = false
+
   const sortablesTranslate = {
     name: 'name',
     generation: 'gen',
@@ -47,6 +50,11 @@
     })
   }
 
+  function handleToggleOnlyRenderRecentTicks() {
+    onlyRenderRecentTicks = !onlyRenderRecentTicks
+    console.log('onlyRenderRecentTicks', onlyRenderRecentTicks)
+  }
+
   function handleToggleOidSelection(oidId) {
     onSelectedOid(oidId)
   }
@@ -75,12 +83,14 @@
   <div class="buttons-container">
     <ButtonControls />
   </div>
-  <div class="chart">
+  <div class="chart" on:click={handleToggleOnlyRenderRecentTicks}>
     <DualLineChart
-      data={livingMoidCounts}
+      data={onlyRenderRecentTicks ? livingMoidCounts.slice(-recentTicksToShow) : livingMoidCounts}
       lineColor="rgb(200, 200, 200)"
       label="Moids"
-      secondaryData={livingFoxoidCounts}
+      secondaryData={onlyRenderRecentTicks
+        ? livingFoxoidCounts.slice(-recentTicksToShow)
+        : livingFoxoidCounts}
       secondaryLineColor="rgb(228, 108, 4)"
       secondaryLabel="Foxoids"
       secondaryOptions={{ beginAtZero: true, position: 'right' }}
