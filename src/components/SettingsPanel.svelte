@@ -15,6 +15,9 @@
   import { oidDefaults, VERSION } from '../utils/defaults.js'
 
   const formattedBuildTime = new Date(VERSION.buildTime).toLocaleString('nb-NO')
+  const maxMoidCount = 500
+  const maxCellCount = 200
+  const maxFPS = 60
 
   // Local copy of settings that we'll edit
   let settings = { ...$simulationSettings }
@@ -35,13 +38,17 @@
 
   function handleSaveAndRestart() {
     let message = ''
-    if (settings.initialMoidCount > 1000) {
-      alert("Initial number of Moids can't exceed 1000. Setting to 1000.")
-      settings.initialMoidCount = 1000
+    if (settings.initialMoidCount > maxMoidCount) {
+      alert(`Initial number of Moids can't exceed ${maxMoidCount}. Setting to ${maxMoidCount}.`)
+      settings.initialMoidCount = maxMoidCount
     }
-    if (settings.xCellCount > 200) {
-      alert("Number of cells per row can't exceed 200. Setting to 200.")
-      settings.xCellCount = 200
+    if (settings.xCellCount > maxCellCount) {
+      alert(`Number of cells per row can't exceed ${maxCellCount}. Setting to ${maxCellCount}.`)
+      settings.xCellCount = maxCellCount
+    }
+    if (settings.maxFPS > maxFPS) {
+      alert(`Simulation speed can't exceed ${maxFPS} FPS. Setting to ${maxFPS} FPS.`)
+      settings.maxFPS = maxFPS
     }
 
     // Update the store with new settings

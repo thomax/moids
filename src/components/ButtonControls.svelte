@@ -46,7 +46,7 @@
   })
 </script>
 
-<div class="buttons-container" title="What do you want to deploy?">
+<div class="buttons-container">
   {#each options as option, i}
     <button
       class:active={selectedOption === option}
@@ -61,7 +61,11 @@
   {/each}
 
   <div class="settings-buttons-container">
-    <button class="settings-button" onclick={() => handleRunToggle()}>
+    <button
+      class="settings-button"
+      onclick={() => handleRunToggle()}
+      title={$isRunning ? 'Pause' : 'Run'}
+    >
       <div class="icon-wrapper">
         {#if $isRunning}
           <MdPause />
@@ -71,7 +75,11 @@
       </div>
     </button>
 
-    <button class="settings-button" onclick={() => handleMuteToggle()}>
+    <button
+      class="settings-button"
+      onclick={() => handleMuteToggle()}
+      title={$isMuted ? 'Unmute' : 'Mute'}
+    >
       <div class="icon-wrapper">
         {#if $isMuted}
           <MdVolumeUp />
@@ -81,13 +89,17 @@
       </div>
     </button>
 
-    <button class="settings-button" onclick={() => handleSettingsToggle('settings')}>
+    <button
+      class="settings-button"
+      onclick={() => handleSettingsToggle('settings')}
+      title="Settings"
+    >
       <div class="icon-wrapper">
         <MdSettings />
       </div>
     </button>
 
-    <button class="settings-button" onclick={() => handleSettingsToggle('help')}>
+    <button class="settings-button" onclick={() => handleSettingsToggle('help')} title="Help">
       <div class="icon-wrapper">
         <MdHelp />
       </div>

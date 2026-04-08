@@ -1,7 +1,7 @@
 export const oidDefaults = {
   initialMoidCount: 2,
-  xCellCount: 15,
-  maxFPS: 1,
+  xCellCount: 12,
+  maxFPS: 20,
   location: {
     grassRegrowthRate: 0.5,
     maxGrass: 150
