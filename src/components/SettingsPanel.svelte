@@ -75,7 +75,7 @@
 
 <div class="settings-panel">
   <div class="settings-header">
-    <h2>{$settingsPanelMode === 'settings' ? 'Simulation Settings' : 'Help'}</h2>
+    <h2>{$settingsPanelMode === 'settings' ? 'Settings' : "What's going on?"}</h2>
     <div class="header-buttons">
       <button on:click={handleToggleMode}>
         {$settingsPanelMode === 'settings' ? 'Show Help' : 'Show Settings'}
@@ -296,53 +296,73 @@
       </div>
     {:else}
       <div class="help-content">
-        <h3>Moids!</h3>
-        <p>A simple ecosystem simulation with</p>
+        <p>Moids is a simple ecosystem simulator with:</p>
         <ul>
-          <li><strong>Grass</strong> - Grows over time and provides energy for Moids</li>
-          <li><strong>Moids</strong> - Herbivores that eat grass and reproduce</li>
-          <li><strong>Foxoids</strong> - Predators that eat Moids and reproduce</li>
+          <li><strong>Grass</strong> - Grows over time and provides energy for Moids.</li>
+          <li><strong>Moids</strong> - Herbivores that move, eat grass and reproduce.</li>
+          <li><strong>Foxoids</strong> - Predators thatmove, eat Moids and reproduce.</li>
           <li>
-            <strong>Genetics</strong> - On reproduction, Oid attributes might mutate. Observe genetic
-            drift over time in the five charts to the far right
+            <strong>Genetics</strong> - On reproduction, moid/foxoid attributes might mutate. Observe
+            genetic drift over time in the five charts to the far right.
           </li>
         </ul>
 
         <h3>How to Use</h3>
         <ul>
-          <li>Deploy extra grass, a Moid, or a Foxoid</li>
-          <li>Select name of Moid or Foxoid in the lists to track it</li>
-          <li>Adjust values in settings</li>
-          <li>Observe how the population changes over time</li>
+          <li>Deploy extra grass, a Moid, or a Foxoid.</li>
+          <li>Select name of Moid or Foxoid in the lists to track it.</li>
+          <li>Adjust values in settings.</li>
+          <li>Observe how the population changes over time.</li>
         </ul>
 
-        <h3>About the Settings</h3>
+        <h3>Settings Explained</h3>
         <ul>
-          <li><strong>Initial Moid Count</strong> - Number of Moids at simulation start</li>
-          <li><strong>Grid Size</strong> - Number of locations per row in the simulation grid</li>
-          <li><strong>Simulation Speed</strong> - How fast the simulation runs (FPS)</li>
-          <li><strong>Grass Growth Rate</strong> - How quickly grass regrows</li>
-          <li><strong>Maximum Grass</strong> - Maximum amount of grass per location</li>
-          <li><strong>Metabolic Rate</strong> - How much energy an oid spends per tick</li>
-          <li><strong>Feeding Efficiency</strong> - How much food an entity can consume</li>
+          <li><strong>Initial Moid Count</strong> - Number of Moids at simulation start.</li>
+          <li><strong>Grid Size</strong> - Number of squares per row in the grid.</li>
+          <li><strong>Simulation Speed</strong> - How fast the simulation runs (FPS).</li>
+          <li><strong>Grass Growth Rate</strong> - How quickly grass grows.</li>
+          <li><strong>Maximum Grass</strong> - Maximum amount of grass per location.</li>
+          <li><strong>Metabolic Rate</strong> - How much energy a moid/foxoid spends per tick.</li>
           <li>
-            <strong>Food Energy Conversion</strong> - How efficiently food is converted to energy
+            <strong>Feeding Efficiency</strong> - How much of the available food a moid/foxoid can consume
+            pr. tick.
           </li>
-          <li><strong>Max Energy</strong> - Determines the maximum energy capacity</li>
+          <li>
+            <strong>Food Energy Conversion</strong> - How efficiently food is converted to energy.
+          </li>
+          <li><strong>Max Energy</strong> - Determines the maximum energy capacity.</li>
+        </ul>
+
+        <h3>Genetics Attributes</h3>
+        <p>
+          These can't be changed by the user, but offspring will differ from parent if a mutation
+          occurs.
+        </p>
+        <ul>
+          <li>
+            <strong>Keep Moving Threshold</strong> - If available food is below this value, the oid ignores
+            eating and moves instead.
+          </li>
+          <li>
+            <strong>Energy to Offspring</strong> - Ratio of body energy donated to offspring at reproduction
+            (e.g. 0.4 = 40% of parent energy passed on; both parents are affected).
+          </li>
+          <li>
+            <strong>Sufficient Energy Level</strong> - Minimum energy ratio required to reproduce (e.g.
+            size 500 × 0.2 = must have &gt;100 energy).
+          </li>
+          <li>
+            <strong>Mutation Rate</strong> - Probability of a mutation when passing attributes to offspring
+            (e.g. 0.1 = 10% chance).
+          </li>
+          <li>
+            <strong>Mutation Impact</strong> - How much an attribute changes when a mutation occurs (e.g.
+            0.1 = ±10%).
+          </li>
         </ul>
       </div>
     {/if}
   </div>
-
-  {#if $settingsPanelMode === 'help'}
-    <div class="whoDunnIt">
-      Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚
-      and ☕️
-      <div class="version-info">
-        {formattedBuildTime}
-      </div>
-    </div>
-  {/if}
 
   <div class="settings-footer">
     {#if $settingsPanelMode === 'settings'}
@@ -356,6 +376,13 @@
         <button on:click={handleClosePanel}>Cancel</button>
       </div>
     {:else}
+      <div class="whoDunnIt">
+        Created by <a href="https://github.com/thomax/moids" target="_blank">thomax</a> with 🤨, 💚
+        and ☕️
+        <div class="version-info">
+          {formattedBuildTime}
+        </div>
+      </div>
       <button on:click={handleClosePanel}>Close</button>
     {/if}
   </div>
@@ -475,9 +502,6 @@
   }
 
   .whoDunnIt {
-    position: absolute;
-    bottom: 80px;
-    right: 50px;
     font-size: 1rem;
     color: #888;
   }
