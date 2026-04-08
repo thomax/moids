@@ -6,9 +6,12 @@
   import LineChart from './LineChart.svelte'
   import { round } from '../utils/functions.js'
   import { Foxoid } from '../klasses/Foxoid'
+  import { onlyRenderRecentTicks } from '../stores/globalStore.js'
+  import { recentTicksToShow } from '../utils/defaults.js'
 
   export let moids = []
   export let foxoids = []
+  export let tickCount = 0
 
   // Moid stats
   let avgsKeepMovingThreshold = []
@@ -86,8 +89,10 @@
     foxAvgsMutationImpact = [...foxAvgsMutationImpact, round(totMutationImpact / foxoidCount)]
   }
 
-  $: if (moids) updateMoidAverages()
-  $: if (foxoids) updateFoxoidAverages()
+  $: if (tickCount) {
+    updateMoidAverages()
+    updateFoxoidAverages()
+  }
 
   onMount(() => {
     updateMoidAverages()
@@ -103,7 +108,9 @@
       <h3>Keep Moving Threshold</h3>
       <div class="chart">
         <LineChart
-          data={avgsKeepMovingThreshold}
+          data={$onlyRenderRecentTicks
+            ? avgsKeepMovingThreshold.slice(-recentTicksToShow)
+            : avgsKeepMovingThreshold}
           lineColor="rgb(255, 255, 255)"
           label="keepMovingThreshold"
           options={{ beginAtZero: false }}
@@ -112,7 +119,9 @@
       <h3>Energy to Offspring</h3>
       <div class="chart">
         <LineChart
-          data={avgsEnergyGivenToOffspring}
+          data={$onlyRenderRecentTicks
+            ? avgsEnergyGivenToOffspring.slice(-recentTicksToShow)
+            : avgsEnergyGivenToOffspring}
           lineColor="rgb(255, 0, 255)"
           label="Energy to offspring"
           options={{ beginAtZero: false }}
@@ -122,7 +131,9 @@
       <h3>Sufficient Energy Level</h3>
       <div class="chart">
         <LineChart
-          data={avgsSufficientEnergyLevel}
+          data={$onlyRenderRecentTicks
+            ? avgsSufficientEnergyLevel.slice(-recentTicksToShow)
+            : avgsSufficientEnergyLevel}
           lineColor="rgb(0, 255, 255)"
           label="Sufficient energy level"
           options={{ beginAtZero: false }}
@@ -132,7 +143,9 @@
       <h3>Mutation Rate</h3>
       <div class="chart">
         <LineChart
-          data={avgsMutationRate}
+          data={$onlyRenderRecentTicks
+            ? avgsMutationRate.slice(-recentTicksToShow)
+            : avgsMutationRate}
           lineColor="rgb(255, 255, 0)"
           label="Mutation Rate"
           options={{ beginAtZero: false }}
@@ -142,7 +155,9 @@
       <h3>Mutation Impact</h3>
       <div class="chart">
         <LineChart
-          data={avgsMutationImpact}
+          data={$onlyRenderRecentTicks
+            ? avgsMutationImpact.slice(-recentTicksToShow)
+            : avgsMutationImpact}
           lineColor="rgb(255, 0, 0)"
           label="Mutation Impact"
           options={{ beginAtZero: false }}
@@ -156,7 +171,9 @@
       <h3>Keep Moving Threshold</h3>
       <div class="chart">
         <LineChart
-          data={foxAvgsKeepMovingThreshold}
+          data={$onlyRenderRecentTicks
+            ? foxAvgsKeepMovingThreshold.slice(-recentTicksToShow)
+            : foxAvgsKeepMovingThreshold}
           lineColor="rgb(255, 255, 255)"
           label="keepMovingThreshold"
           options={{ beginAtZero: false }}
@@ -165,7 +182,9 @@
       <h3>Energy to Offspring</h3>
       <div class="chart">
         <LineChart
-          data={foxAvgsEnergyGivenToOffspring}
+          data={$onlyRenderRecentTicks
+            ? foxAvgsEnergyGivenToOffspring.slice(-recentTicksToShow)
+            : foxAvgsEnergyGivenToOffspring}
           lineColor="rgb(255, 0, 255)"
           label="Energy to offspring"
           options={{ beginAtZero: false }}
@@ -175,7 +194,9 @@
       <h3>Sufficient Energy Level</h3>
       <div class="chart">
         <LineChart
-          data={foxAvgsSufficientEnergyLevel}
+          data={$onlyRenderRecentTicks
+            ? foxAvgsSufficientEnergyLevel.slice(-recentTicksToShow)
+            : foxAvgsSufficientEnergyLevel}
           lineColor="rgb(0, 255, 255)"
           label="Sufficient energy level"
           options={{ beginAtZero: false }}
@@ -185,7 +206,9 @@
       <h3>Mutation Rate</h3>
       <div class="chart">
         <LineChart
-          data={foxAvgsMutationRate}
+          data={$onlyRenderRecentTicks
+            ? foxAvgsMutationRate.slice(-recentTicksToShow)
+            : foxAvgsMutationRate}
           lineColor="rgb(255, 255, 0)"
           label="Mutation Rate"
           options={{ beginAtZero: false }}
@@ -195,7 +218,9 @@
       <h3>Mutation Impact</h3>
       <div class="chart">
         <LineChart
-          data={foxAvgsMutationImpact}
+          data={$onlyRenderRecentTicks
+            ? foxAvgsMutationImpact.slice(-recentTicksToShow)
+            : foxAvgsMutationImpact}
           lineColor="rgb(255, 0, 0)"
           label="Mutation Impact"
           options={{ beginAtZero: false }}

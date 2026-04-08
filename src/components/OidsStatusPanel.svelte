@@ -5,7 +5,8 @@
   import DualLineChart from './DualLineChart.svelte'
   import moidImagePath from '../assets/moid.png'
   import foxoidImagePath from '../assets/foxoid.png'
-  import { on } from 'svelte/events'
+  import { onlyRenderRecentTicks } from '../stores/globalStore.js'
+  import { recentTicksToShow } from '../utils/defaults.js'
 
   export let moids = []
   export let foxoids = []
@@ -16,9 +17,6 @@
   export let starvedFoxoidCount = 0
   export let onSelectedOid
   export let tickCount = 0
-
-  const recentTicksToShow = 2000
-  let onlyRenderRecentTicks = false
 
   const sortablesTranslate = {
     name: 'name',
@@ -50,11 +48,6 @@
     })
   }
 
-  function handleToggleOnlyRenderRecentTicks() {
-    onlyRenderRecentTicks = !onlyRenderRecentTicks
-    console.log('onlyRenderRecentTicks', onlyRenderRecentTicks)
-  }
-
   function handleToggleOidSelection(oidId) {
     onSelectedOid(oidId)
   }
@@ -83,12 +76,12 @@
   <div class="buttons-container">
     <ButtonControls />
   </div>
-  <div class="chart" on:click={handleToggleOnlyRenderRecentTicks}>
+  <div class="chart">
     <DualLineChart
-      data={onlyRenderRecentTicks ? livingMoidCounts.slice(-recentTicksToShow) : livingMoidCounts}
+      data={$onlyRenderRecentTicks ? livingMoidCounts.slice(-recentTicksToShow) : livingMoidCounts}
       lineColor="rgb(200, 200, 200)"
       label="Moids"
-      secondaryData={onlyRenderRecentTicks
+      secondaryData={$onlyRenderRecentTicks
         ? livingFoxoidCounts.slice(-recentTicksToShow)
         : livingFoxoidCounts}
       secondaryLineColor="rgb(228, 108, 4)"
@@ -186,13 +179,25 @@
       </li>
     </ul>
   </div>
-  <div class="tick-count">{tickCount}</div>
+  <div class="bottom-bar">
+    <label class="recent-ticks-toggle">
+      <input type="checkbox" bind:checked={$onlyRenderRecentTicks} />
+      Only render last {recentTicksToShow} ticks
+    </label>
+    <span class="tick-count">{tickCount}</span>
+  </div>
 </div>
 
 <style>
   .panels-container {
     font-family: 'Courier New', Courier, monospace;
     padding: 0px 4px;
+  }
+
+  .bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .tick-count {
@@ -276,7 +281,18 @@
     margin: 0;
     border: 1px solid gray;
     padding: 3px;
+    margin-bottom: 4px;
+  }
+
+  .recent-ticks-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: gray;
+    font-size: 0.75rem;
+    cursor: pointer;
     margin-bottom: 7px;
+    user-select: none;
   }
 
   .livingFoxoids {

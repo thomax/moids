@@ -268,7 +268,7 @@
     {starvedFoxoidCount}
     onSelectedOid={handleToggleSelectedOid}
   />
-  <ExpandedStats {moids} {foxoids} />
+  <ExpandedStats {moids} {foxoids} {tickCount} />
 </div>
 
 {#if $showSettingsPanel}

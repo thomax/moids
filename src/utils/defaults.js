@@ -1,3 +1,5 @@
+export const recentTicksToShow = 2000
+
 export const oidDefaults = {
   initialMoidCount: 2,
   xCellCount: 12,

@@ -57,9 +57,7 @@
         },
       })
     }
-    chart.data.datasets.forEach((dataset) => {
-      dataset.data.push(data[data.length - 1])
-    })
+    chart.data.datasets[0].data = data
     chart.data.labels = Array.from({ length: data.length }, (_, i) => i + 1)
     chart.update('none')
   }
